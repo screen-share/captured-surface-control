@@ -148,7 +148,7 @@ We mitigate using a permission prompt. The downsides are as usual:
 The downsides are all known, and should be considered against those associated with alternative approaches (e.g. Video Portal).
 
 #### Access at a time not controlled by the user
-Discussed below. (TODO: Link to the transient activation part.)
+Discussed [below](#transient-activation).
 
 #### Side effects
 Delivering wheel events might have effects other than scrolling the page. If we consider some modern dating applications, we note that “swiping right” could have far-reaching consequences, and might even culminate in matrimony. However, the author of this document argues that the permission prompt is sufficient here, as it was for other Web Platform capabilities.
