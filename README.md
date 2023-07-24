@@ -21,6 +21,12 @@ A **"capturing application"** is an application which has called [getDisplayMedi
 
 We extend [CaptureController](https://www.w3.org/TR/screen-capture/#capturecontroller) to support a limited set of low-risk actions.
 
+### Prelude: Permissions Prompt
+
+The first invocation of either `sendWheel()`, `getZoomLevel()` or `setZoomLevel()` on a given `CaptureController` object produces a [permissions prompt](https://developer.mozilla.org/en-US/docs/Web/API/Permissions). If the user grants permission, all future invocations of these methods on that specific CaptureController object are allowed. It is for that reason that these three methods return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise); naturally, if the user refuses permission, the returned Promise is rejected.
+
+Note that CaptureControllers are uniquely associated with a given capture-session, cannot be associated with another capture-session, and do not survive navigation.
+
 ### Scrolling
 
 We define the following new action:
@@ -67,7 +73,57 @@ When to ask for the user's permission, and how to educate users that scrolling o
 
 ## Zooming
 
-TODO
+We define the following new actions:
+
+```webidl
+partial interface CaptureController {
+  int getMinZoomLevel();
+  int getMaxZoomLevel();
+
+  Promise<int> getZoomLevel();
+  Promise<undefined> setZoomLevel(int zoomLevel);
+
+  attribute EventHandler oncapturedzoomlevelchange;
+};
+```
+
+**getMinZoomLevel() / getMaxZoomLevel()**  
+These return the min/max zoom levels supported by the implementation, represented as percentages of the "default zoom-level", which is defined as 100%.
+
+**getZoomLevel()**  
+Returns the current zoom-level of the captured tab.
+
+**setZoomLevel()**  
+Given an integer value between the values returned by `getMinZoomLevel()` and `getMaxZoomLevel()`, sets the zoom level to that value.
+
+One way to use these methods is as follows:
+```js
+const zoomIncreaseButton = document.getElementById('zoomInButton');
+zoomIncreaseButton.addEventListener('click', async (event) => {
+  const oldZoomLevel = await controller.getZoomLevel();
+  const newZoomLevel = Math.min(oldZoomLevel + 10, controller.getMaxZoomLevel());
+  controller.setZoomLevel(newZoomLevel);
+});
+````
+
+**oncapturedzoomlevelchange**  
+Users may change the zoom-level either through the capturing application, or through direct interaction with the captured tab. If the capturing application is displaying any user-facing controls and UX element, such as an indicator of the current zoom-level, or buttons to increase/decrease zoom, then the application will want to listen to such changes and reflect them. The `oncapturedzoomlevelchange` event handler supports that.
+
+An example of reasonable use of the event handler is as follows:
+```js
+captureController.addEventListener('zoomLevelChange', (event) => {
+  const controller = event.target;
+  const zoomLevel = controller.getZoomLevel();
+
+  // Update label.
+  zoomLevelLabel.innerHTML = `${zoomLevel}%`;
+
+  // Update controls.
+  zoomResetButton.enabled = (zoomLevel != 100);
+  zoomIncreaseButton.enabled = (zoomLevel < controller.getMaxZoomLevel());
+  zoomDecreaseButton.enabled = (zoomLevel > controller.getMinZoomLevel());
+});
+```
 
 ## Security and Privacy Concerns
 
