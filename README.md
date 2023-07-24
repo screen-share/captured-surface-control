@@ -156,3 +156,7 @@ An alternative approach, currently labeled "Video Portal", has been discussed, f
 ### What about blur?
 
 Should a captured tab be unblurred before receiving `wheel` events? That's an open question for now.
+
+### How does the zoom-level correspond to CSS zoom?
+
+It is not currently clear that it does, but we're investigating the issue in light of [recent activity](https://github.com/w3c/csswg-drafts/issues/5623#issuecomment-1646125737) on that front.
