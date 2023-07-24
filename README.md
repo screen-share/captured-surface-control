@@ -96,7 +96,12 @@ Returns the current zoom-level of the captured tab.
 **setZoomLevel()**  
 Given an integer value between the values returned by `getMinZoomLevel()` and `getMaxZoomLevel()`, sets the zoom level to that value.
 
-One way to use these methods is as follows:
+One way to use these methods is to present UX elements to the user:
+<p align="center">
+  <img src="https://github.com/screen-share/captured-surface-control/assets/22117736/972e6b80-be79-4467-b02e-f52e0785c33f">
+</p>
+
+Code backing up these controls could look like:
 ```js
 const zoomIncreaseButton = document.getElementById('zoomInButton');
 zoomIncreaseButton.addEventListener('click', async (event) => {
