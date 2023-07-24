@@ -21,9 +21,9 @@ A **"capturing application"** is an application which has called [getDisplayMedi
 
 We extend [CaptureController](https://www.w3.org/TR/screen-capture/#capturecontroller) to support a limited set of low-risk actions.
 
-### Prelude: Permissions Prompt
+### Prelude: Permission Prompt
 
-The first invocation of either `sendWheel()`, `getZoomLevel()` or `setZoomLevel()` on a given `CaptureController` object produces a [permissions prompt](https://developer.mozilla.org/en-US/docs/Web/API/Permissions). If the user grants permission, all future invocations of these methods on that specific CaptureController object are allowed. It is for that reason that these three methods return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise); naturally, if the user refuses permission, the returned Promise is rejected.
+The first invocation of either `sendWheel()`, `getZoomLevel()` or `setZoomLevel()` on a given `CaptureController` object produces a [permission prompt](https://developer.mozilla.org/en-US/docs/Web/API/Permissions). If the user grants permission, all future invocations of these methods on that specific CaptureController object are allowed. It is for that reason that these three methods return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise); naturally, if the user refuses permission, the returned Promise is rejected.
 
 Note that CaptureControllers are uniquely associated with a given capture-session, cannot be associated with another capture-session, and do not survive navigation.
 
@@ -127,7 +127,56 @@ captureController.addEventListener('zoomLevelChange', (event) => {
 
 ## Security and Privacy Concerns
 
-TODO
+### Permission prompts
+Permission prompts are currently used as mitigations for Web Platform capabilities which are arguably even riskier than those presented in this document - clipboard access, geolocation, mic- and camera-access, and most notably, screen-capture itself. It follows that, if the prompt can be clear enough for the user, it should be a sufficient mitigation for the risks associated with the API surfaces we introduce.
+
+### Risks and mitigations
+#### User confusion
+To obtain initial permission to use the API, and to keep on using it, an application does not need to show the user a video representation of the surface under control via a `<video>` element. Even if it does show such a `<video>` element, it is not guaranteed that the `<video>` element is connected to a [MediaStreamTrack](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack) derived from the surface being captured, or that the MediaStreamTrack being used is not manipulated in some ways, e.g. using Breakout Box.
+
+A browser-mediated connection between the captured surface and the permission prompt is infeasible. Instead, we rely on careful phrasing of the permission prompt as the mitigation for these risks.
+
+#### Access to pixels beyond those originally intended by the user
+When a user chooses to share a tab or a window, it might be that they only intended to share with the app the content immediately visible. The APIs we introduce will allow the capturing application to gain access to yet more content. This is both the core risk of the API as well as its intended use.
+
+We mitigate using a permission prompt. The downsides are as usual:
+* Dialog fatigue and the risk of the user just approving so as to be done with it.
+* Impaired usability of Web apps that now require additional toil of their users.
+* Difficulty in communicating to the user precisely what permission they are asked to grant.
+* Difficulty in communicating to the user why such a permission could be risky.
+
+The downsides are all known, and should be considered against those associated with alternative approaches (e.g. Video Portal).
+
+#### Access at a time not controlled by the user
+Discussed below. (TODO: Link to the transient activation part.)
+
+#### Side effects
+Delivering wheel events might have effects other than scrolling the page. If we consider some modern dating applications, we note that “swiping right” could have far-reaching consequences, and might even culminate in matrimony. However, the author of this document argues that the permission prompt is sufficient here, as it was for other Web Platform capabilities.
+
+#### Scrolling third-party iframes when self-capturing
+Applications that are capturing their own tab can load arbitrary third-party content in iframes and scroll it, thereby either gaining access to new content of their choosing, or producing arbitrary side effects. The mitigation of the permission prompt is still presented as sufficient here, as is the unlikelihood of third-party content only being sensitive after scrolling. If necessary, in the future, it is possible to also remove the ability to control the current tab.
+
+### Transient activation
+If transient activation is not required before each individual invocation of the APIs introduced by this document, then once the initial permission is obtained, the API can be used at any time, possibly even while the user is away from the device and cannot observe the effects of their change.
+
+We argue that requiring transient activation is not desirable, as it renders impossible some legitimate use-cases, without actually contributing significantly to security.
+
+#### Legitimate use cases blocked by transient activation requirement
+Consider the following legitimate use case:
+1. The local user participates in a video-conferencing session and chooses to share a tab.
+2. Through interaction with the browser’s permission prompt, the local user allows scrolling and zooming of the captured tab by the video-conferencing application.
+3. Through interaction with the video-conferencing application, the user allows a specific remote participant to scroll the captured tab - when a remote user sends a request to scroll, the request gets translated by the local application to a sendWheel() invocation.
+4. The remote user can now control a local presentation, removing the need for the remote user to repeatedly ask the local user - “next slide, please.” This is a major boon to such applications, where this is a critical user journey.
+
+#### Insufficiency of transient activation requirement to protect the user
+On the one hand, consider the following *potential attack*:
+1. Obtain the user’s permission to capture another tab.
+2. Use arbitrary user gestures to scroll the captured tab and change its zoom-level.
+
+While executing the aforementioned attack, either avoid presenting a preview-tile to the user, or show a frozen preview-tile containing an older frame, hiding from the user the scrolling of the captured tab.
+
+#### Conclusion
+It is arguable that the legitimate use case described above is risky. However, we argue that it’s up to the application to only deploy it according to the local user’s genuine intentions.
 
 ## Common questions
 
