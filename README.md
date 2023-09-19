@@ -69,7 +69,9 @@ previewTile.addEventListener("wheel", (event) => {
 });
 ```
 
-When to ask for the user's permission, and how to educate users that scrolling over the preview-tile would scroll the captured surface, are left as exercises for the reader.
+Educating the users that scrolling over the preview-tile is a possibility can be done in any number of ways. Below is an illustration of one possibility.
+
+![image](https://github.com/screen-share/captured-surface-control/assets/22117736/c6e7aab6-54e2-4c71-837f-84c73b57216f)
 
 ## Zooming
 
