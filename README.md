@@ -89,10 +89,8 @@ function translateCoordinates(event) {
   const videoTrackWidth = videoTrack.getSettings().width;
   const videoTrackHeight = videoTrack.getSettings().height;
 
-  const x = parseInt(
-    (videoTrackWidth * event.offsetX) / video.getBoundingClientRect().width);
-  const y = parseInt(
-    (videoTrackHeight * event.offsetY) / video.getBoundingClientRect().height);
+  const x = parseInt((videoTrackWidth * event.offsetX) / video.getBoundingClientRect().width);
+  const y = parseInt((videoTrackHeight * event.offsetY) / video.getBoundingClientRect().height);
 
   return [x, y];
 }
@@ -114,28 +112,31 @@ Educating the users that scrolling over the preview-tile is a possibility can be
 
 ## Zooming
 
-We define the following new actions:
+We extend `CaptureController`` as follows:
 
 ```webidl
 partial interface CaptureController {
-  int getMinZoomLevel();
-  int getMaxZoomLevel();
+  sequence<int> getSupportedZoomLevels();
 
-  Promise<int> getZoomLevel();
+  int getZoomLevel();
   Promise<undefined> setZoomLevel(int zoomLevel);
 
   attribute EventHandler oncapturedzoomlevelchange;
 };
 ```
 
-**getMinZoomLevel() / getMaxZoomLevel()**  
-These return the min/max zoom levels supported by the implementation, represented as percentages of the "default zoom-level", which is defined as 100%.
+#### getSupportedZoomLevels()
+Returns a list of zoom-levels supported by the implementation, represented as percentages of the "default zoom-level", which is defined as 100%. The list is guaranteed to be monotonically increasing, and is guaranteed to contain the value `100`.
 
-**getZoomLevel()**  
-Returns the current zoom-level of the captured tab.
+**Note:** User agents may trim the list to ensure it's not inordinately long. If the need arises, this function may in the future be extended to receive an argument with the maximum number of entries the application is interested in receiving.
 
-**setZoomLevel()**  
-Given an integer value between the values returned by `getMinZoomLevel()` and `getMaxZoomLevel()`, sets the zoom level to that value.
+#### getZoomLevel()
+Returns the current zoom-level of the captured surface.
+
+Note that this method does not require the user's permission. This is deemed as safe, because the capturing application already has access to all of the pixels of the captured surface, and revealing the zoom-level is negligible in comparison. Revealing this information ahead of prompting the users allows applications to display UX with the current zoom-level and increase/decrease buttons. The benefit this has for the user offsets the concerns this API might have otherwise introduced.
+
+#### setZoomLevel(value)
+Given an integer `value` that appears in `getSupportedZoomLevels()`, sets the zoom-level of the captured surface to `value`.
 
 One way to use these methods is to present UX elements to the user:
 <p align="center">
@@ -146,16 +147,27 @@ Code backing up these controls could look like:
 ```js
 const zoomIncreaseButton = document.getElementById('zoomInButton');
 zoomIncreaseButton.addEventListener('click', async (event) => {
-  const oldZoomLevel = await controller.getZoomLevel();
-  const newZoomLevel = Math.min(oldZoomLevel + 10, controller.getMaxZoomLevel());
-  controller.setZoomLevel(newZoomLevel);
+  const supportedZoomLevels = controller.getSupportedZoomLevels();
+  const currentZoomLevelIndex =
+      supportedZoomLevels.indexOf(controller.getZoomLevel());
+  if (currentZoomLevelIndex >= supportedZoomLevelsz.length - 1) {
+    return;
+  }
+  const newZoomLevel = supportedZoomLevels[currentZoomLevelIndex + 1];
+  try {
+    await controller.setZoomLevel(newZoomLevel);
+  } catch (e) {
+    // ...
+  }
 });
 ````
 
-**oncapturedzoomlevelchange**  
-Users may change the zoom-level either through the capturing application, or through direct interaction with the captured tab. If the capturing application is displaying any user-facing controls and UX element, such as an indicator of the current zoom-level, or buttons to increase/decrease zoom, then the application will want to listen to such changes and reflect them. The `oncapturedzoomlevelchange` event handler supports that.
+**Note:** The behavior if `value` is not a supported zoom level, but is between the minimum and maximum levels, is an open issue. Chrome's initial implementation will reject, but it is possible that in the future, the specification might be changed to mandate rounding to the nearest value, or `floor()`-ing, or anything similar. Developers are encouraged to be conservative on this matter and only input values programmatically read from `getSupportedZoomLevels()`.
 
-An example of reasonable use of the event handler is as follows:
+#### oncapturedzoomlevelchange
+Users may change the zoom-level either through the capturing application, or through direct interaction with the captured tab. If the capturing application is displaying any user-facing controls and UX element, such as an indicator of the current zoom-level or buttons to increase/decrease zoom, then the application will want to listen to such changes and reflect them in the app's own UX. The `oncapturedzoomlevelchange` event handler helps with that.
+
+One example of possible use of the event is:
 ```js
 captureController.addEventListener('zoomLevelChange', (event) => {
   const controller = event.target;
@@ -165,9 +177,11 @@ captureController.addEventListener('zoomLevelChange', (event) => {
   zoomLevelLabel.innerHTML = `${zoomLevel}%`;
 
   // Update controls.
-  zoomResetButton.enabled = (zoomLevel != 100);
-  zoomIncreaseButton.enabled = (zoomLevel < controller.getMaxZoomLevel());
-  zoomDecreaseButton.enabled = (zoomLevel > controller.getMinZoomLevel());
+  const supportedZoomLevels = controller.getSupportedZoomLevels();
+  const currentZoomLevelIndex =
+      supportedZoomLevels.indexOf(controller.getZoomLevel());
+  zoomIncreaseButton.disabled = (currentZoomLevelIndex >= supportedZoomLevels.length - 1);
+  zoomDecreaseButton.disabled = (currentZoomLevelIndex <= 0);
 });
 ```
 
