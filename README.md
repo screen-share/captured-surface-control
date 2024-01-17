@@ -23,14 +23,37 @@ We extend [CaptureController](https://www.w3.org/TR/screen-capture/#capturecontr
 
 ### Prelude: Permission Prompt
 
-The first invocation of either `sendWheel()`, `getZoomLevel()` or `setZoomLevel()` on a given `CaptureController` object produces a [permission prompt](https://developer.mozilla.org/en-US/docs/Web/API/Permissions). If the user grants permission, all future invocations of these methods on that specific CaptureController object are allowed. It is for that reason that these three methods return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise); naturally, if the user refuses permission, the returned Promise is rejected.
+The first invocation of either `sendWheel()` or `setZoomLevel()` on a given `CaptureController` object produces a [permission prompt](https://developer.mozilla.org/en-US/docs/Web/API/Permissions). If the user grants permission, all further invocations of these methods on that specific CaptureController object are allowed. It is for that reason that these methods return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise); naturally, if the user refuses permission, the returned Promise is rejected.
 
-Note that CaptureControllers are uniquely associated with a given capture-session, cannot be associated with another capture-session, and do not survive navigation.
+The permission, if granted, is scoped to the capture-session associated with that `CaptureController`. Note that `CaptureController`s are uniquely associated with a capture-session, cannot be associated with another capture-session, and do not survive navigation of the page where they are defined. (They *do* survive the navigation of the captured page.)
+
+**Note:** Work is underway to scope the permission to the capturing origin, as is the case with most permissions. This will be possible once better user agent UX is developed, giving users better indication that the capturing application is allowed to scroll/zoom the captured surface, and allowing the user a quick way to revoke that permission.
+
+Before displaying a permission prompt to the user, the app must solicit a user gesture. If the user clicks a zoom-in or zoom-out button in the app, that user gesture is a given. But if the application wishes to offer scroll-control first, developers should keep in mind that scrolling does not constitute a user gesture in itself. One reasonable approach in that case is to first offer the user a "start scrolling" button, as per the example below:
+```js
+const controller = new CaptureController();
+const stream = await navigator.mediaDevices.getDisplayMedia({ controller });
+const previewTile = document.getElementById('previewTile');  // <video>
+previewTile.srcObject = stream;
+
+const startScrollingButton = document.getElementById('startScrollingButton');
+startScrollingButton.onclick = async () => {
+  try {
+    startScrollingButton.disabled = true;
+    await controller.sendWheel({});
+    startCapturedSurfaceControl();
+  } catch (e) {
+    startScrollingButton.disabled = false;
+    return;  // Permission denied. Bail.
+  }
+};
+```
+
+This uses an empty `CapturedWheelAction` dictionary, leading to the user being prompted to grant permission, but producing no side effect otherwise.
 
 ### Scrolling
 
-We define the following new action:
-
+We define the following new dictionary and associated action:
 ```webidl
 dictionary CapturedWheelAction {
   int x = 0;
@@ -48,26 +71,40 @@ Using `sendWheel()`, a capturing application can deliver [wheel events](https://
 
 A reasonable way to use the API, assuming a `<video>` element called `'previewTile'` is employed by the capturing application, follows:
 ```js
-const controller = new CaptureController();
-const stream = await navigator.mediaDevices.getDisplayMedia({ controller });
+// Having obtained the user’s permission, we can now relay subsequent wheel
+// events to the captured tab.
 const previewTile = document.getElementById('previewTile');  // <video>
-previewTile.srcObject = stream;
-
-// Perform a null-action so as to prompt the user for permission.
-try {
-  await controller.sendWheel({});
-} catch (e) {
-  return;  // Permission denied. Bail.
-}
-
-// Having obtained the user’s permission, we can now relay subsequent
-// wheel events to the captured tab.
 previewTile.addEventListener("wheel", (event) => {
   const [x, y] = translateCoordinates(event.offsetX, event.offsetY);
   controller.sendWheel({
     x, y, wheelDeltaX: event.wheelDeltaX, wheelDeltaY: event.wheelDeltaY});
 });
 ```
+
+A reasonable way to implement `translateCoordinates()` above is:
+```js
+function translateCoordinates(event) {
+  const videoElement = document.getElementById('previewTile');
+  const [videoTrack] = videoElement.srcObject.getVideoTracks();
+  const videoTrackWidth = videoTrack.getSettings().width;
+  const videoTrackHeight = videoTrack.getSettings().height;
+
+  const x = parseInt((videoTrackWidth * event.offsetX) / video.getBoundingClientRect().width);
+  const y = parseInt((videoTrackHeight * event.offsetY) / video.getBoundingClientRect().height);
+
+  return [x, y];
+}
+```
+
+Note that there are three different sizes in play in the example above:
+1. The size of the `<video>` element.
+2. The size of the captured frames. (Represented here as `videoTrack.getSettings().width` and `...height`.)
+3. The size of the captured surface.
+
+The first is fully within the domain of the application, and unknown to the user agent.
+The third is fully within the domain of the user agent, and unknown to the application.
+
+The application therefore uses `translateCoordinates()` to translate the offsets relative to the `<video>` element into coordinates within the video track's own coordinates space. The user agent will likewise translate between the second and third coordinate spaces, and deliver the scroll event at an offset corresponding to the expectation of the application.
 
 Educating the users that scrolling over the preview-tile is a possibility can be done in any number of ways. Below is an illustration of one possibility.
 
