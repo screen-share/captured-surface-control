@@ -238,7 +238,9 @@ On the one hand, consider the following *potential attack*:
 While executing the aforementioned attack, either avoid presenting a preview-tile to the user, or show a frozen preview-tile containing an older frame, hiding from the user the scrolling of the captured tab.
 
 #### Conclusion
-It is arguable that the legitimate use case described above is risky. However, we argue that it’s up to the application to only deploy it according to the local user’s genuine intentions.
+It is arguable that the legitimate use case described above is risky. We argue that it’s up to the application to only deploy it according to the local user’s genuine intentions.
+
+**However**, user agents need to ensure that while a user is actively interacting with a captured tab, the capturing tab would not be able to concurrently zoom and scroll the captured tab, which would be confusing and frustrating for the user even in non-malicious settings. Due to the complexity of specifying and implementing this, Chrome's initial implementation of this API will only allow the capturing application to scroll/zoom while the capturing application is focused. The first draft of the spec will pose this as a requirement, but this may be changed at a later time.
 
 ## Common questions
 
