@@ -89,8 +89,10 @@ function translateCoordinates(event) {
   const videoTrackWidth = videoTrack.getSettings().width;
   const videoTrackHeight = videoTrack.getSettings().height;
 
-  const x = parseInt((videoTrackWidth * event.offsetX) / video.getBoundingClientRect().width);
-  const y = parseInt((videoTrackHeight * event.offsetY) / video.getBoundingClientRect().height);
+  const x = parseInt(
+    (videoTrackWidth * event.offsetX) / video.getBoundingClientRect().width);
+  const y = parseInt(
+    (videoTrackHeight * event.offsetY) / video.getBoundingClientRect().height);
 
   return [x, y];
 }
