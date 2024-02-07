@@ -77,7 +77,7 @@ const previewTile = document.getElementById('previewTile');  // <video>
 previewTile.addEventListener("wheel", (event) => {
   const [x, y] = translateCoordinates(event.offsetX, event.offsetY);
   controller.sendWheel({
-    x, y, wheelDeltaX: event.wheelDeltaX, wheelDeltaY: event.wheelDeltaY});
+    x, y, wheelDeltaX: -event.deltaX, wheelDeltaY: -event.deltaY});
 });
 ```
 
