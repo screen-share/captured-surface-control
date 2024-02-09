@@ -171,7 +171,7 @@ Users may change the zoom-level either through the capturing application, or thr
 
 One example of possible use of the event is:
 ```js
-captureController.addEventListener('zoomLevelChange', (event) => {
+captureController.addEventListener('capturedzoomlevelchange', (event) => {
   const controller = event.target;
   const zoomLevel = controller.getZoomLevel();
 
