@@ -183,7 +183,7 @@ captureController.addEventListener('zoomLevelChange', (event) => {
 });
 ```
 
-## Security and Privacy Concerns
+## Security and Privacy Considerations
 
 ### Permission prompts
 Permission prompts are currently used as mitigations for Web Platform capabilities which are arguably even riskier than those presented in this document - clipboard access, geolocation, mic- and camera-access, and most notably, screen-capture itself. It follows that, if the prompt can be clear enough for the user, it should be a sufficient mitigation for the risks associated with the API surfaces we introduce.
