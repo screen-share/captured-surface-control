@@ -33,7 +33,7 @@ Before displaying a permission prompt to the user, the app must solicit a user g
 ```js
 const controller = new CaptureController();
 const stream = await navigator.mediaDevices.getDisplayMedia({ controller });
-const previewTile = document.getElementById('previewTile');  // <video>
+const previewTile = document.querySelector('video');
 previewTile.srcObject = stream;
 
 const startScrollingButton = document.getElementById('startScrollingButton');
@@ -73,7 +73,7 @@ A reasonable way to use the API, assuming a `<video>` element called `'previewTi
 ```js
 // Having obtained the user’s permission, we can now relay subsequent wheel
 // events to the captured tab.
-const previewTile = document.getElementById('previewTile');  // <video>
+const previewTile = document.querySelector('video');
 previewTile.addEventListener("wheel", (event) => {
   const [x, y] = translateCoordinates(event.offsetX, event.offsetY);
   controller.sendWheel({
@@ -83,18 +83,14 @@ previewTile.addEventListener("wheel", (event) => {
 
 A reasonable way to implement `translateCoordinates()` above is:
 ```js
-function translateCoordinates(event) {
-  const videoElement = document.getElementById('previewTile');
-  const [videoTrack] = videoElement.srcObject.getVideoTracks();
-  const videoTrackWidth = videoTrack.getSettings().width;
-  const videoTrackHeight = videoTrack.getSettings().height;
+function translateCoordinates(offsetX, offsetY) {
+  const previewDimensions = previewTile.getBoundingClientRect();
+  const trackSettings = previewTile.srcObject.getVideoTracks()[0].getSettings();
 
-  const x =
-      parseInt((videoTrackWidth * event.offsetX) / video.getBoundingClientRect().width);
-  const y =
-      parseInt((videoTrackHeight * event.offsetY) / video.getBoundingClientRect().height);
+  const x = trackSettings.width * offsetX / previewDimensions.width;
+  const y = trackSettings.height * offsetY / previewDimensions.height;
 
-  return [x, y];
+  return [Math.floor(x), Math.floor(y)];
 }
 ```
 
