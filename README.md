@@ -114,10 +114,10 @@ We extend `CaptureController`` as follows:
 
 ```webidl
 partial interface CaptureController {
-  sequence<int> getSupportedZoomLevels();
+  static sequence<long> getSupportedZoomLevels();
 
-  int getZoomLevel();
-  Promise<undefined> setZoomLevel(int zoomLevel);
+  long getZoomLevel();
+  Promise<undefined> setZoomLevel(long zoomLevel);
 
   attribute EventHandler oncapturedzoomlevelchange;
 };
@@ -145,7 +145,7 @@ Code backing up these controls could look like:
 ```js
 const zoomIncreaseButton = document.getElementById('zoomInButton');
 zoomIncreaseButton.addEventListener('click', async (event) => {
-  const supportedZoomLevels = controller.getSupportedZoomLevels();
+  const supportedZoomLevels = CaptureController.getSupportedZoomLevels();
   const currentZoomLevelIndex =
       supportedZoomLevels.indexOf(controller.getZoomLevel());
   if (currentZoomLevelIndex >= supportedZoomLevelsz.length - 1) {
@@ -167,17 +167,15 @@ Users may change the zoom-level either through the capturing application, or thr
 
 One example of possible use of the event is:
 ```js
-captureController.addEventListener('zoomLevelChange', (event) => {
-  const controller = event.target;
+controller.addEventListener('capturedzoomlevelchange', (event) => {
   const zoomLevel = controller.getZoomLevel();
 
   // Update label.
-  zoomLevelLabel.innerHTML = `${zoomLevel}%`;
+  zoomLevelLabel.textContent = `${zoomLevel}%`;
 
   // Update controls.
   const supportedZoomLevels = controller.getSupportedZoomLevels();
-  const currentZoomLevelIndex =
-      supportedZoomLevels.indexOf(controller.getZoomLevel());
+  const currentZoomLevelIndex = supportedZoomLevels.indexOf(zoomLevel);
   zoomIncreaseButton.disabled = (currentZoomLevelIndex >= supportedZoomLevels.length - 1);
   zoomDecreaseButton.disabled = (currentZoomLevelIndex <= 0);
 });
@@ -242,7 +240,7 @@ It is arguable that the legitimate use case described above is risky. We argue t
 
 ### What about Picutre-in-Picture?
 
-[Document Picutre-in-Picture](https://wicg.github.io/document-picture-in-picture/) presents an alternative partial solution to some of the problems addressed by Captured Surface Control. Given the different trade-offs chosen, some applications/users might prefer PiP, while other would prefer Captured Surface Control.
+[Document Picture-in-Picture](https://wicg.github.io/document-picture-in-picture/) presents an alternative partial solution to some of the problems addressed by Captured Surface Control. Given the different trade-offs chosen, some applications/users might prefer PiP, while other would prefer Captured Surface Control.
 
 Benefits of PiP:
 * No additional new APIs required.
