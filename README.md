@@ -175,8 +175,7 @@ controller.addEventListener('capturedzoomlevelchange', (event) => {
 
   // Update controls.
   const supportedZoomLevels = controller.getSupportedZoomLevels();
-  const currentZoomLevelIndex =
-      supportedZoomLevels.indexOf(controller.getZoomLevel());
+  const currentZoomLevelIndex = supportedZoomLevels.indexOf(zoomLevel);
   zoomIncreaseButton.disabled = (currentZoomLevelIndex >= supportedZoomLevels.length - 1);
   zoomDecreaseButton.disabled = (currentZoomLevelIndex <= 0);
 });
