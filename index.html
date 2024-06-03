@@ -172,7 +172,21 @@
             </p>
             <p>When invoked, run the following steps:</p>
             <ol>
-              <li></li>
+              <li>
+                If [=this=] is not [=actively capturing=], [=exception/throw=] an
+                "{{InvalidStateError}}" {{DOMException}}.
+              </li>
+              <li>
+                If [=this=].<a data-cite="!screen-capture/#dfn-displaysurfacetype"
+                  >[[\DisplaySurfaceType]]</a
+                >
+                is not a [=display surface/browser=] [=display surface=], [=exception/throw=] a
+                "{{NotSupportedError}}" {{DOMException}}.
+              </li>
+              <li>
+                Return [=this=].<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a>'s [=zoom
+                level=].
+              </li>
             </ol>
           </dd>
           <dt><dfn>setZoomLevel()</dfn></dt>
@@ -190,8 +204,8 @@
       <section>
         <h2>Subroutine: Actively capturing</h2>
         <p>
-          To determine if a {{CaptureController}} <var>C</var> is <dfn>actively capturing</dfn> a
-          [=display surface=] of type <var>S</var>, run the following steps:
+          To determine if a {{CaptureController}} <var>C</var> is <dfn>actively capturing</dfn>, run
+          the following steps:
         </p>
         <ol>
           <!-- TODO: Fix the export of CaptureController's internal slots and use them. -->
@@ -202,12 +216,6 @@
           <li>
             If <var>C</var>.<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a> has been
             <a data-cite="GETUSERMEDIA#source-stopped">stopped</a>, return <code>false</code>.
-          </li>
-          <li>
-            If <var>C</var>.<a data-cite="!screen-capture/#dfn-displaysurfacetype"
-              >[[\DisplaySurfaceType]]</a
-            >
-            is not <var>S</var>, return <code>false</code>.
           </li>
           <li>Return <code>true</code>.</li>
         </ol>
