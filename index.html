@@ -7,22 +7,163 @@
     <script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove"></script>
   </head>
   <body>
-    <section id="abstract">
-      <h2>Abstract</h2>
-      <p>TODO</p>
-    </section>
     <section id="sotd"></section>
-    <section id="conformance"></section>
+    <section id="abstract">
+      <p>
+        Consider a Web application <var>capturer</var> which has used
+        {{MediaDevices/getDisplayMedia()}} to start capturing another [=display surface=] we call
+        <var>capturee</var>. This specification introduces a set of APIs that allow
+        <var>capturer</var> the following new capabilities:
+      </p>
+      <ul>
+        <li>Read or set <var>capturee</var>'s zoom level.</li>
+        <li>
+          Deliver a wheel event over <var>capturee</var>'s viewport at coordinates of
+          <var>capturer</var>'s choosing.
+        </li>
+      </ul>
+      <p>
+        Initially, these are only specified for captured [=display surfaces=] of type [=display
+        surface/browser=], but extensions to [=display surface/window=] and [=display
+        surface/monitor=] [=display surfaces=] are considered.
+      </p>
+    </section>
     <section id="background">
-      <h2>Background</h2>
-      <p>TODO</p>
+      <h1>Background</h1>
+      <p>
+        Nearly all video-conferencing Web applications offer their users the ability to share
+        [=display surfaces=] - typically a browser tab ([=display surface/browser=]), a native app's
+        window ([=display surface/window=]), or an entire screen ([=display surface/monitor=]).
+      </p>
+      <p>
+        Many of these applications also show the local user a "preview tile" with a video of the
+        captured [=display surface=].
+      </p>
+      <p>
+        All these applications suffer from one key drawback - if the user wishes to interact with a
+        captured [=display surface=], the user must first switch to that surface, taking them away
+        from the video-conferencing application. This presents a few issues:
+      </p>
+      <ol>
+        <li>
+          Users can't simultaneously interact with the captured application and see the videos of
+          remote users.
+        </li>
+        <li>
+          Users are burdened by the need to repeatedly switch between the video-conferencing
+          application and the captured surface.
+        </li>
+        <li>
+          Users are limited in their ability to see and interact with controls exposed by the
+          video-conferencing application while they are interacting with the captured surface. A
+          non-comprehensive list of examples of such controls includes - embedded chat applications,
+          emoji reactions, "knock-ins" by users asking to join the call, and multimedia controls.
+        </li>
+        <!-- TODO: Reintroduce the following in a separate section focusing on potential future scope:
+        <li>
+          Local users who are presenting cannot delegate some limited control to remote
+          participants. This leads to the all too familiar scenario, where remote users must beg the
+          local user to change the slide or scroll a bit up/down.
+        </li> -->
+      </ol>
+      <p>
+        It bears mentioning that
+        <a href="https://wicg.github.io/document-picture-in-picture/"
+          >Document Picture-in-Picture</a
+        >
+        goes a long way towards addressing some of these issues. However, it not always a suitable
+        solution, as not all use cases are adequately addressed by a floating window which will
+        often be small, which obscures arbitrary other content on the screen, and whose size and
+        positioning must be manually controlled by the user.
+      </p>
     </section>
-    <section id="use-cases">
-      <h2>Use cases</h2>
-      <p>TOOD</p>
+    <section id="feature-policy-integration">
+      <h1>Permissions Policy Integration</h1>
+      <p>
+        This specification defines a [=policy-controlled feature=] identified by the string
+        <dfn class="permission export"><code>"captured-surface-control"</code></dfn
+        >. Its [=policy-controlled feature/default allowlist=] is <code>"self"</code>.
+      </p>
+      <p>
+        Some of the APIs introduced in this specification may be invoked by any document, and are
+        not subject to any permissions policy. We define each such API an "gated Captured Surface
+        Control API", or for short, an
+        <dfn>ungated API</dfn>.
+      </p>
+      <p>
+        Some other APIs in introduced in this specification may only be called by documents that
+        have the <code>"captured-surface-control"</code> permissions policy. We define each such API
+        a "gated Captured Surface Control API", or for short, a <dfn>permission-gated API</dfn>.
+      </p>
     </section>
+    <section id="zoom">
+      <h1>Zoom</h1>
+      <section id="zoom-definition">
+        <h2>Definition of Zoom</h2>
+        <p>
+          We loosely define a concept of "<dfn>zoom level</dfn>" that can be applied to [=display
+          surfaces=] of any type, and which is independent of the user agent and the platform. It is
+          assumed that this concept will match, in the case of [=display surface/browser=] [=display
+          surfaces=], the concept of zoom level that user agents typically exposed to the user.
+        </p>
+        <ol>
+          <li>
+            The default [=zoom level=] of any [=display surface=] is 100. All implementations must
+            support this value for all [=display surface=] of any type.
+          </li>
+          <li>
+            Decreasing [=zoom level=] values represent "zooming out". The minimum theoretical value
+            is 1; however, user agents may cap their support for "zooming out" at a larger values,
+            with 100 being the largest permissible minimum value, representing lack of support for
+            "zooming out".
+          </li>
+          <li>
+            Increasing values represent "zooming in". This specification does not mandate a
+            theoretical maximum. The smallest possible maximum is 100, which represents lack of
+            support for "zooming in".
+          </li>
+        </ol>
+        <p></p>
+      </section>
+      <section id="zoom-control-apis">
+        <h2>Zoom-control APIs</h2>
+
+        <pre class="idl">
+        partial interface CaptureController {
+          static sequence&lt;long&gt; getSupportedZoomLevels();
+          long getZoomLevel();
+          Promise&lt;undefined&gt; setZoomLevel(long zoomLevel);
+          attribute EventHandler oncapturedzoomlevelchange;
+        };
+        </pre>
+
+        <dl data-link-for="CaptureController" data-dfn-for="CaptureController" class="methods">
+          <dt><dfn>getSupportedZoomLevels()</dfn></dt>
+          <dd>
+            <p>
+              This static method allows applications to determine the set of valid zoom levels
+              supported by the user agent. It is an [=ungated API=].
+            </p>
+            <p>When invoked, run the following steps:</p>
+            <ol>
+              <li>Return a monotonically increasing sequence of TODO.</li>
+            </ol>
+          </dd>
+
+          <dt><dfn>getZoomLevel()</dfn></dt>
+          <dd>Some text</dd>
+
+          <dt><dfn>setZoomLevel()</dfn></dt>
+          <dd>Some text</dd>
+
+          <dt><dfn>oncapturedzoomlevelchange</dfn></dt>
+          <dd>Some text</dd>
+        </dl>
+      </section>
+    </section>
+
     <section id="examples">
-      <h2>Examples</h2>
+      <h1>Examples</h1>
       <p>TODO</p>
     </section>
   </body>
