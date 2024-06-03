@@ -8,6 +8,7 @@
   </head>
   <body>
     <section id="sotd"></section>
+
     <section id="abstract">
       <p>
         Consider a Web application <var>capturer</var> which has used
@@ -28,6 +29,7 @@
         surface/monitor=] [=display surfaces=] are considered.
       </p>
     </section>
+
     <section id="background">
       <h1>Background</h1>
       <p>
@@ -77,6 +79,7 @@
         positioning must be manually controlled by the user.
       </p>
     </section>
+
     <section id="feature-policy-integration">
       <h1>Permissions Policy Integration</h1>
       <p>
@@ -96,6 +99,7 @@
         a "gated Captured Surface Control API", or for short, a <dfn>permission-gated API</dfn>.
       </p>
     </section>
+
     <section id="zoom">
       <h1>Zoom</h1>
       <section id="zoom-definition">
@@ -127,7 +131,6 @@
       </section>
       <section id="zoom-control-apis">
         <h2>Zoom-control APIs</h2>
-
         <pre class="idl">
         partial interface CaptureController {
           static sequence&lt;long&gt; getSupportedZoomLevels();
@@ -136,7 +139,6 @@
           attribute EventHandler oncapturedzoomlevelchange;
         };
         </pre>
-
         <dl data-link-for="CaptureController" data-dfn-for="CaptureController" class="methods">
           <dt><dfn>getSupportedZoomLevels()</dfn></dt>
           <dd>
@@ -162,16 +164,53 @@
               <!-- TODO: File a spec issue. -->
             </div>
           </dd>
-
           <dt><dfn>getZoomLevel()</dfn></dt>
-          <dd>Some text</dd>
-
+          <dd>
+            <p>
+              This static method allows applications to determine the current zoom level of the
+              captured [=display surface=]. It is an [=ungated API=].
+            </p>
+            <p>When invoked, run the following steps:</p>
+            <ol>
+              <li></li>
+            </ol>
+          </dd>
           <dt><dfn>setZoomLevel()</dfn></dt>
-          <dd>Some text</dd>
-
+          <dd>
+            <p>TODO TODO TODO. It is a [=permission-gated API=].</p>
+          </dd>
           <dt><dfn>oncapturedzoomlevelchange</dfn></dt>
           <dd>Some text</dd>
         </dl>
+      </section>
+    </section>
+
+    <section>
+      <h1>Subroutines</h1>
+      <section>
+        <h2>Subroutine: Actively capturing</h2>
+        <p>
+          To determine if a {{CaptureController}} <var>C</var> is <dfn>actively capturing</dfn> a
+          [=display surface=] of type <var>S</var>, run the following steps:
+        </p>
+        <ol>
+          <!-- TODO: Fix the export of CaptureController's internal slots and use them. -->
+          <li>
+            If <var>C</var>.<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a> is
+            <code>null</code>, return <code>false</code>.
+          </li>
+          <li>
+            If <var>C</var>.<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a> has been
+            <a data-cite="GETUSERMEDIA#source-stopped">stopped</a>, return <code>false</code>.
+          </li>
+          <li>
+            If <var>C</var>.<a data-cite="!screen-capture/#dfn-displaysurfacetype"
+              >[[\DisplaySurfaceType]]</a
+            >
+            is not <var>S</var>, return <code>false</code>.
+          </li>
+          <li>Return <code>true</code>.</li>
+        </ol>
       </section>
     </section>
 
