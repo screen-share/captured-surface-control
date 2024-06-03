@@ -146,8 +146,21 @@
             </p>
             <p>When invoked, run the following steps:</p>
             <ol>
-              <li>Return a monotonically increasing sequence of TODO.</li>
+              <li>Return a monotonically increasing sequence of all supported [=zoom levels=].</li>
             </ol>
+            <div class="note">
+              <p>
+                The definition of this method as static allows querying for supported [=zoom
+                levels=] before capture even starts, allowing applications to present the user with
+                UX such as drop-down lists.
+              </p>
+              <p>
+                This design decision does not lend itself well to extnesion to multiple [=display
+                surface=] types, as the list of supported [=zoom levels=] might differ among them. A
+                change here is expected.
+              </p>
+              <!-- TODO: File a spec issue. -->
+            </div>
           </dd>
 
           <dt><dfn>getZoomLevel()</dfn></dt>
