@@ -261,9 +261,51 @@
             </ol>
           </dd>
           <dt><dfn>oncapturedzoomlevelchange</dfn></dt>
-          <dd>Some text</dd>
+          <dd>TODO</dd>
         </dl>
       </section>
+    </section>
+
+    <section id="scrolling">
+      <h1>Scroll</h1>
+      <p>
+        We introduce a mechanism by which capturing applications may deliver a synthetic
+        <a href="https://w3c.github.io/uievents/#idl-wheelevent">wheel event</a> over the viewport
+        of a captured [=display surface=].
+      </p>
+      <pre class="idl">
+        dictionary CapturedWheelAction {
+          long x = 0;
+          long y = 0;
+          long wheelDeltaX = 0;
+          long wheelDeltaY = 0;
+        };
+      </pre>
+      <dl data-link-for="CapturedWheelAction" data-dfn-for="CapturedWheelAction">
+        <dt><dfn>x</dfn></dt>
+        <dd>
+          The horizontal offset of the point where the wheel event should be delivered. 0 represents
+          the left edge of the viewport.
+        </dd>
+        <dt><dfn>y</dfn></dt>
+        <dd>
+          The vertical offset of the point where the wheel event should be delivered. 0 represents
+          the upper edge of the viewport.
+        </dd>
+        <dt><dfn>wheelDeltaX</dfn></dt>
+        <dd>The horizontal scroll amount, in pixels.</dd>
+        <dt><dfn>wheelDeltaY</dfn></dt>
+        <dd>The vertical scroll amount, in pixels.</dd>
+      </dl>
+      <pre class="idl">
+        partial interface CaptureController {
+          Promise&lt;undefined&gt; sendWheel(optional CapturedWheelAction action = {});
+        };
+      </pre>
+      <dl data-link-for="CaptureController" data-dfn-for="CaptureController" class="methods">
+        <dt><dfn>sendWheel()</dfn></dt>
+        <dd>TODO</dd>
+      </dl>
     </section>
 
     <section>
