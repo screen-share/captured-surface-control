@@ -151,7 +151,7 @@
               This [=ungated API=] allows applications to discover the set of [=zoom levels=]
               supported by the user agent.
             </p>
-            <p>When invoked, run the following steps:</p>
+            <p>When invoked, the user agent MUST run the following steps:</p>
             <ol>
               <li>
                 If [=this=] is not [=actively capturing=], [=exception/throw=] an
@@ -179,7 +179,7 @@
               This [=ungated API=] allows applications to discover the captured [=display
               surface=]'s [=zoom level=].
             </p>
-            <p>When invoked, run the following steps:</p>
+            <p>When invoked, the user agent MUST run the following steps:</p>
             <ol>
               <li>
                 If [=this=] is not [=actively capturing=], [=exception/throw=] an
@@ -204,7 +204,7 @@
               This [=permission-gated API=] allows applications to set the captured [=display
               surface=]'s [=zoom level=].
             </p>
-            <p>When invoked, run the following steps:</p>
+            <p>When invoked, the user agent MUST run the following steps:</p>
             <ol>
               <li>
                 If [=this=] is not [=actively capturing=], return a promise [=reject|rejected=] with
@@ -218,10 +218,9 @@
                 >.
               </li>
               <li>
-                If <var>surfaceType</var> is not a [=display surface/browser=] or [=display
-                surface/window=] [=display surface=], return a promise [=reject|rejected=] with a
-                {{DOMException}} object whose {{DOMException/name}} attribute has the value
-                {{NotSupportedError}}.
+                If <var>surfaceType</var> is not a [=supported display surface type=], return a
+                promise [=reject|rejected=] with a {{DOMException}} object whose
+                {{DOMException/name}} attribute has the value {{NotSupportedError}}.
               </li>
               <li>Let <var>targetZoomLevel</var> be the method's first argument.</li>
               <li>
@@ -268,11 +267,6 @@
 
     <section id="scrolling">
       <h1>Scroll</h1>
-      <p>
-        We introduce a mechanism by which capturing applications may deliver a synthetic
-        <a href="https://w3c.github.io/uievents/#idl-wheelevent">wheel event</a> over the viewport
-        of a captured [=display surface=].
-      </p>
       <pre class="idl">
         dictionary CapturedWheelAction {
           long x = 0;
@@ -304,7 +298,13 @@
       </pre>
       <dl data-link-for="CaptureController" data-dfn-for="CaptureController" class="methods">
         <dt><dfn>sendWheel()</dfn></dt>
-        <dd>TODO</dd>
+        <dd>
+          <p>
+            This [=permission-gated API=] allows applications to deliver a synthetic
+            <a href="https://w3c.github.io/uievents/#idl-wheelevent">wheel event</a> over the
+            viewport of a captured [=display surface=].
+          </p>
+        </dd>
       </dl>
     </section>
 
