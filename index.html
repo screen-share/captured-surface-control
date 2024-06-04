@@ -88,10 +88,9 @@
         >. Its [=policy-controlled feature/default allowlist=] is <code>"self"</code>.
       </p>
       <p>
-        Some of the APIs introduced in this specification may be invoked by any document, and are
-        not subject to any permissions policy. We define each such API an "gated Captured Surface
-        Control API", or for short, an
-        <dfn>ungated API</dfn>.
+        Some of the APIs introduced in this specification may be invoked by any document and are not
+        subject to any permissions policy. We define each such API an "ungated Captured Surface
+        Control API", or for short, an <dfn>ungated API</dfn>.
       </p>
       <p>
         Some other APIs in introduced in this specification may only be called by documents that
@@ -231,14 +230,34 @@
                 {{DOMException}} object whose {{DOMException/name}} attribute has the value
                 {{InvalidStateError}}.
               </li>
-              <li>Let <var>p</var> be a new {{Promise}}.</li>
+              <li>Let <var>P</var> be a new {{Promise}}.</li>
               <li>Run the following steps [=in parallel=]:</li>
               <li>
                 <ol>
-                  <li>TODO</li>
+                  <li>
+                    If the [=relevant global object=]'s [=navigable=]'s [=top-level traversable=]
+                    does NOT have
+                    <a data-cite="!HTML/#tlbc-system-focus">system focus</a>, [=reject=]
+                    <var>P</var> with a new {{DOMException}} object whose {{DOMException/name}}
+                    attribute has the value {{NotFoundError}} and abort these steps.
+                  </li>
+                  <li>
+                    [=Request permission to use=] a {{PermissionDescriptor}} with its
+                    {{PermissionDescriptor/name}} member set to
+                    <code>"captured-surface-control"</code>. If the result of the request is
+                    {{PermissionState/"denied"}}, [=reject=] <var>P</var> with a new
+                    {{DOMException}} object whose {{DOMException/name}} is {{NotAllowedError}} and
+                    abort these steps.
+                  </li>
+                  <li>
+                    Set [=this=.<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a>'s [=zoom
+                    level=] to <var>targetZoomLevel</var>.
+                  </li>
+                  <!-- TODO: Mention the effect the prior step has on the relevant events. -->
+                  <li>[=Resolve=] <var>P</var>.</li>
                 </ol>
               </li>
-              <li>Return <var>p</var>.</li>
+              <li>Return <var>P</var>.</li>
             </ol>
           </dd>
           <dt><dfn>oncapturedzoomlevelchange</dfn></dt>
