@@ -128,9 +128,10 @@
           </li>
         </ul>
         <p>
-          For a given [=display surface=] of type <var>T</var>, we define the user agent's set of
-          <dfn>supported zoom levels</dfn> for <var>T</var> as a non-empty set of integers including
-          at least the [=default zoom level=] (100), and not including any integers lesser than 1.
+          For a given [=display surface=] of type <var>surfaceType</var>, we define the user agent's
+          set of <dfn>supported zoom levels</dfn> for <var>surfaceType</var> as a non-empty set of
+          integers including at least the [=default zoom level=] (100), and not including any
+          integers lesser than 1.
         </p>
       </section>
       <section id="zoom-control-apis">
@@ -267,43 +268,35 @@
 
     <section>
       <h1>Subroutines</h1>
-      <section>
-        <h2>Subroutine: Actively capturing</h2>
-        <p>
-          To determine if a {{CaptureController}} <var>C</var> is <dfn>actively capturing</dfn>, run
-          the following steps:
-        </p>
-        <ol>
-          <!-- TODO: Fix the export of CaptureController's internal slots and use them. -->
-          <li>
-            Let <var>source</var> be <var>C</var>.<a data-cite="!screen-capture/#dfn-source"
-              >[[\Source]]</a
-            >.
-          </li>
-          <li>If <var>source</var> is <code>null</code>, return <code>false</code>.</li>
-          <li>
-            If <var>source</var> has been <a data-cite="GETUSERMEDIA#source-stopped">stopped</a>,
-            return <code>false</code>.
-          </li>
-          <li>Return <code>true</code>.</li>
-        </ol>
-      </section>
-      <section>
-        <h2>Subroutine: Supported display surface type</h2>
-        <p>
-          To determine if a [=display surface=] <var>surfaceType</var> is
-          <dfn>supported display surface type</dfn>, run the following steps:
-        </p>
-        <ol>
-          <li>
-            If <var>surfaceType</var> is [=display surface/browser=], return <code>true</code>.
-          </li>
-          <li>Return <code>false</code>.</li>
-        </ol>
-        <div class="note">
-          <p>Whether [=display surface/window=] should be supported is under discussion.</p>
-        </div>
-      </section>
+      <p>
+        To determine if a {{CaptureController}} <var>C</var> is <dfn>actively capturing</dfn>, run
+        the following steps:
+      </p>
+      <ol>
+        <!-- TODO: Fix the export of CaptureController's internal slots and use them. -->
+        <li>
+          Let <var>source</var> be <var>C</var>.<a data-cite="!screen-capture/#dfn-source"
+            >[[\Source]]</a
+          >.
+        </li>
+        <li>If <var>source</var> is <code>null</code>, return <code>false</code>.</li>
+        <li>
+          If <var>source</var> has been <a data-cite="GETUSERMEDIA#source-stopped">stopped</a>,
+          return <code>false</code>.
+        </li>
+        <li>Return <code>true</code>.</li>
+      </ol>
+      <p>
+        To determine if a [=display surface=] <var>surfaceType</var> is
+        <dfn>supported display surface type</dfn>, run the following steps:
+      </p>
+      <ol>
+        <li>If <var>surfaceType</var> is [=display surface/browser=], return <code>true</code>.</li>
+        <li>Return <code>false</code>.</li>
+      </ol>
+      <div class="note">
+        <p>Whether [=display surface/window=] should be supported is under discussion.</p>
+      </div>
     </section>
 
     <section id="examples">
