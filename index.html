@@ -7,8 +7,6 @@
     <script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove"></script>
   </head>
   <body>
-    <section id="sotd"></section>
-
     <section id="abstract">
       <p>
         Consider a Web application <var>capturer</var> which has used
@@ -25,10 +23,11 @@
       </ul>
       <p>
         Initially, these are only specified for captured [=display surfaces=] of type [=display
-        surface/browser=], but extensions to [=display surface/window=] and [=display
-        surface/monitor=] [=display surfaces=] are considered.
+        surface/browser=], but an extension to [=display surface/window=] is considered.
       </p>
     </section>
+
+    <section id="sotd"></section>
 
     <section id="background">
       <h1>Background</h1>
@@ -235,10 +234,10 @@
                 <ol>
                   <li>
                     If the [=relevant global object=]'s [=navigable=]'s [=top-level traversable=]
-                    does NOT have
-                    <a data-cite="!HTML/#tlbc-system-focus">system focus</a>, [=reject=]
-                    <var>P</var> with a new {{DOMException}} object whose {{DOMException/name}}
-                    attribute has the value {{NotFoundError}} and abort these steps.
+                    does NOT have <a data-cite="!HTML/#tlbc-system-focus">system focus</a>,
+                    [=reject=] <var>P</var> with a new {{DOMException}} object whose
+                    {{DOMException/name}} attribute has the value {{NotFoundError}} and abort these
+                    steps.
                   </li>
                   <li>
                     [=Request permission to use=] a {{PermissionDescriptor}} with its
@@ -251,8 +250,8 @@
                   <li>
                     Set [=this=].<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a>'s [=zoom
                     level=] to <var>targetZoomLevel</var>.
+                    <!-- TODO: Mention the effect this step has on the relevant events. -->
                   </li>
-                  <!-- TODO: Mention the effect the prior step has on the relevant events. -->
                   <li>[=Resolve=] <var>P</var>.</li>
                 </ol>
               </li>
@@ -304,46 +303,140 @@
             <a href="https://w3c.github.io/uievents/#idl-wheelevent">wheel event</a> over the
             viewport of a captured [=display surface=].
           </p>
+          <p>When invoked, the user agent MUST run the following steps:</p>
+          <ol>
+            <li>
+              If [=this=] is not [=actively capturing=], return a promise [=reject|rejected=] with a
+              {{DOMException}} object whose {{DOMException/name}} attribute has the value
+              {{InvalidStateError}}.
+            </li>
+            <li>
+              Let <var>surfaceType</var> be [=this=].<a
+                data-cite="!screen-capture/#dfn-displaysurfacetype"
+                >[[\DisplaySurfaceType]]</a
+              >.
+            </li>
+            <li>
+              If <var>surfaceType</var> is not a [=supported display surface type=], return a
+              promise [=reject|rejected=] with a {{DOMException}} object whose {{DOMException/name}}
+              attribute has the value {{NotSupportedError}}.
+            </li>
+            <li>Let <var>action</var> be the method's first argument.</li>
+            <li>
+              If <var>action</var> is not a [=valid wheel action=] for [=this=], return a promise
+              [=reject|rejected=] with a {{DOMException}} object whose {{DOMException/name}}
+              attribute has the value {{InvalidStateError}}.
+            </li>
+            <li>Let <var>P</var> be a new {{Promise}}.</li>
+            <li>Run the following steps [=in parallel=]:</li>
+            <li>
+              <ol>
+                <li>
+                  If the [=relevant global object=]'s [=navigable=]'s [=top-level traversable=] does
+                  NOT have <a data-cite="!HTML/#tlbc-system-focus">system focus</a>, [=reject=]
+                  <var>P</var> with a new {{DOMException}} object whose {{DOMException/name}}
+                  attribute has the value {{NotFoundError}} and abort these steps.
+                </li>
+                <li>
+                  [=Request permission to use=] a {{PermissionDescriptor}} with its
+                  {{PermissionDescriptor/name}} member set to
+                  <code>"captured-surface-control"</code>. If the result of the request is
+                  {{PermissionState/"denied"}}, [=reject=] <var>P</var> with a new {{DOMException}}
+                  object whose {{DOMException/name}} is {{NotAllowedError}} and abort these steps.
+                </li>
+                <li>TODO</li>
+                <li>[=Resolve=] <var>P</var>.</li>
+              </ol>
+            </li>
+            <li>Return <var>P</var>.</li>
+          </ol>
         </dd>
       </dl>
     </section>
 
     <section>
       <h1>Subroutines</h1>
-      <p>
-        To determine if a {{CaptureController}} <var>C</var> is <dfn>actively capturing</dfn>, run
-        the following steps:
-      </p>
-      <ol>
-        <!-- TODO: Fix the export of CaptureController's internal slots and use them. -->
-        <li>
-          Let <var>source</var> be <var>C</var>.<a data-cite="!screen-capture/#dfn-source"
-            >[[\Source]]</a
-          >.
-        </li>
-        <li>If <var>source</var> is <code>null</code>, return <code>false</code>.</li>
-        <li>
-          If <var>source</var> has been <a data-cite="GETUSERMEDIA#source-stopped">stopped</a>,
-          return <code>false</code>.
-        </li>
-        <li>Return <code>true</code>.</li>
-      </ol>
-      <p>
-        To determine if a [=display surface=] <var>surfaceType</var> is
-        <dfn>supported display surface type</dfn>, run the following steps:
-      </p>
-      <ol>
-        <li>If <var>surfaceType</var> is [=display surface/browser=], return <code>true</code>.</li>
-        <li>Return <code>false</code>.</li>
-      </ol>
-      <div class="note">
-        <p>Whether [=display surface/window=] should be supported is under discussion.</p>
-      </div>
+      <section>
+        <h2>Subroutine: Actively capturing</h2>
+        <p>
+          To determine if a {{CaptureController}} <var>controller</var> is
+          <dfn>actively capturing</dfn>, run the following steps:
+        </p>
+        <ol>
+          <li>
+            <!-- TODO: Fix the export of CaptureController's internal slots and use them. -->
+            Let <var>source</var> be <var>controller</var>.<a
+              data-cite="!screen-capture/#dfn-source"
+              >[[\Source]]</a
+            >.
+          </li>
+          <li>If <var>source</var> is <code>null</code>, return <code>false</code>.</li>
+          <li>
+            If <var>source</var> has been <a data-cite="GETUSERMEDIA#source-stopped">stopped</a>,
+            return <code>false</code>.
+          </li>
+          <li>Return <code>true</code>.</li>
+        </ol>
+      </section>
+      <section>
+        <h2>Subroutine: Supported display surface type</h2>
+        <p>
+          To determine if a [=display surface=] <var>surfaceType</var> is
+          <dfn>supported display surface type</dfn>, run the following steps:
+        </p>
+        <ol>
+          <li>
+            If <var>surfaceType</var> is [=display surface/browser=], return <code>true</code>.
+          </li>
+          <li>Return <code>false</code>.</li>
+        </ol>
+        <div class="note">
+          <p>Whether [=display surface/window=] should be supported is under discussion.</p>
+        </div>
+      </section>
+      <section>
+        <h2>Subroutine: Valid wheel action</h2>
+        <p>
+          To determine if a {{CapturedWheelAction}} <var>action</var> is a
+          <dfn>valid wheel action</dfn> for {{CaptureController}} <var>controller</var>, run the
+          following steps:
+        </p>
+        <ol>
+          <li>
+            Let <var>source</var> be <var>controller</var>.<a
+              data-cite="!screen-capture/#dfn-source"
+              >[[\Source]]</a
+            >.
+          </li>
+          <li>
+            <!-- TODO: Expose the track's settings as an internal slot and link to that. -->
+            Let <var>settings</var> be the {{MediaTrackSettings}} object associated with
+            <var>source</var>.
+          </li>
+          <li>
+            If <var>action</var>.{{CapturedWheelAction/x}} is lesser than 0, return
+            <code>false</code>.
+          </li>
+          <li>
+            If <var>action</var>.{{CapturedWheelAction/y}} is lesser than 0, return
+            <code>false</code>.
+          </li>
+          <li>
+            If <var>action</var>.{{CapturedWheelAction/x}} is greater than or equal to
+            <var>settings</var>.{{MediaTrackSettings/width}}, return <code>false</code>.
+          </li>
+          <li>
+            If <var>action</var>.{{CapturedWheelAction/y}} is greater than or equal to
+            <var>settings</var>.{{MediaTrackSettings/height}}, return <code>false</code>.
+          </li>
+          <li>Return <code>true</code>.</li>
+        </ol>
+        <div class="note">
+          <p>This subroutine assumes that <var>controller</var> is [=actively capturing=].</p>
+        </div>
+      </section>
     </section>
 
-    <section id="examples">
-      <h1>Examples</h1>
-      <p>TODO</p>
-    </section>
+    <section id="conformance"></section>
   </body>
 </html>
