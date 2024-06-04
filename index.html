@@ -105,15 +105,16 @@
       <section id="zoom-definition">
         <h2>Definition of Zoom</h2>
         <p>
-          We loosely define a concept of "<dfn>zoom level</dfn>" that can be applied to [=display
+          We define a concept of an integer "<dfn>zoom level</dfn>" that can be applied to [=display
           surfaces=] of any type, and which is independent of the user agent and the platform. It is
-          assumed that this concept will match, in the case of [=display surface/browser=] [=display
-          surfaces=], the concept of zoom level that user agents typically exposed to the user.
+          expected that in the case of [=display surface/browser=] [=display surfaces=], this
+          concept will match the concept of zoom level that user agents typically exposed to the
+          user.
         </p>
         <ul>
           <li>
-            The default [=zoom level=] of any [=display surface=] is 100. All implementations must
-            support this value for all [=display surface=] of any type.
+            The <dfn>default zoom level</dfn> of any [=display surface=] is defined to be 100. All
+            implementations must support this value for all [=display surface=] of any type.
           </li>
           <li>
             Decreasing [=zoom level=] values represent "zooming out". The minimum theoretical value
@@ -127,13 +128,17 @@
             support for "zooming in".
           </li>
         </ul>
-        <p></p>
+        <p>
+          For a given [=display surface=] of type <var>T</var>, we define the user agent's set of
+          <dfn>supported zoom levels</dfn> for <var>T</var> as a non-empty set of integers including
+          at least the [=default zoom level=] (100), and not including any integers lesser than 1.
+        </p>
       </section>
       <section id="zoom-control-apis">
         <h2>Zoom-control APIs</h2>
         <pre class="idl">
         partial interface CaptureController {
-          static sequence&lt;long&gt; getSupportedZoomLevels();
+          sequence&lt;long&gt; getSupportedZoomLevels();
           long getZoomLevel();
           Promise&lt;undefined&gt; setZoomLevel(long zoomLevel);
           attribute EventHandler oncapturedzoomlevelchange;
@@ -143,32 +148,8 @@
           <dt><dfn>getSupportedZoomLevels()</dfn></dt>
           <dd>
             <p>
-              This static method allows applications to determine the set of valid [=zoom levels=]
-              supported by the user agent. It is an [=ungated API=].
-            </p>
-            <p>When invoked, run the following steps:</p>
-            <ol>
-              <li>Return a monotonically increasing sequence of all supported [=zoom levels=].</li>
-            </ol>
-            <div class="note">
-              <p>
-                The definition of this method as static allows querying for supported [=zoom
-                levels=] before capture even starts, allowing applications to present the user with
-                UX such as drop-down lists.
-              </p>
-              <p>
-                This design decision does not lend itself well to extnesion to multiple [=display
-                surface=] types, as the list of supported [=zoom levels=] might differ among them. A
-                change here is expected.
-              </p>
-              <!-- TODO: File a spec issue. -->
-            </div>
-          </dd>
-          <dt><dfn>getZoomLevel()</dfn></dt>
-          <dd>
-            <p>
-              This method allows applications to determine the current [=zoom level=] of the
-              captured [=display surface=]. It is an [=ungated API=].
+              This [=ungated API=] allows applications to discover the set of [=zoom levels=]
+              supported by the user agent.
             </p>
             <p>When invoked, run the following steps:</p>
             <ol>
@@ -180,8 +161,36 @@
                 If [=this=].<a data-cite="!screen-capture/#dfn-displaysurfacetype"
                   >[[\DisplaySurfaceType]]</a
                 >
-                is not a [=display surface/browser=] [=display surface=], [=exception/throw=] a
-                "{{NotSupportedError}}" {{DOMException}}.
+                is not a [=display surface/browser=] or [=display surface/window=] [=display
+                surface=], [=exception/throw=] a "{{NotSupportedError}}" {{DOMException}}.
+              </li>
+              <li>
+                Return a monotonically increasing sequence containing all of the values in the
+                [=supported zoom levels=] for the [=display surface=] type [=this=].<a
+                  data-cite="!screen-capture/#dfn-displaysurfacetype"
+                  >[[\DisplaySurfaceType]]</a
+                >.
+              </li>
+            </ol>
+          </dd>
+          <dt><dfn>getZoomLevel()</dfn></dt>
+          <dd>
+            <p>
+              This [=ungated API=] allows applications to discover the captured [=display
+              surface=]'s [=zoom level=].
+            </p>
+            <p>When invoked, run the following steps:</p>
+            <ol>
+              <li>
+                If [=this=] is not [=actively capturing=], [=exception/throw=] an
+                "{{InvalidStateError}}" {{DOMException}}.
+              </li>
+              <li>
+                If [=this=].<a data-cite="!screen-capture/#dfn-displaysurfacetype"
+                  >[[\DisplaySurfaceType]]</a
+                >
+                is not a [=display surface/browser=] or [=display surface/window=] [=display
+                surface=], [=exception/throw=] a "{{NotSupportedError}}" {{DOMException}}.
               </li>
               <li>
                 Return [=this=].<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a>'s [=zoom
@@ -192,12 +201,44 @@
           <dt><dfn>setZoomLevel()</dfn></dt>
           <dd>
             <p>
-              This method allows applications to set the [=zoom level=] of the captured [=display
-              surface=]. It is a [=permission-gated API=].
+              This [=permission-gated API=] allows applications to set the captured [=display
+              surface=]'s [=zoom level=].
             </p>
             <p>When invoked, run the following steps:</p>
             <ol>
-              <li></li>
+              <li>
+                If [=this=] is not [=actively capturing=], return a promise [=reject|rejected=] with
+                a {{DOMException}} object whose {{DOMException/name}} attribute has the value
+                {{InvalidStateError}}.
+              </li>
+              <li>
+                If [=this=].<a data-cite="!screen-capture/#dfn-displaysurfacetype"
+                  >[[\DisplaySurfaceType]]</a
+                >
+                is not a [=display surface/browser=] or [=display surface/window=] [=display
+                surface=], return a promise [=reject|rejected=] with a {{DOMException}} object whose
+                {{DOMException/name}} attribute has the value {{NotSupportedError}}.
+              </li>
+              <li>Let <var>targetZoomLevel</var> be the method's first argument.</li>
+              <li>
+                Let <var>T</var> be [=this=].<a data-cite="!screen-capture/#dfn-displaysurfacetype"
+                  >[[\DisplaySurfaceType]]</a
+                >.
+              </li>
+              <li>
+                If <var>targetZoomLevel</var> is not included in the user agent's set of [=supported
+                zoom levels=] for <var>T</var>, return a promise [=reject|rejected=] with a
+                {{DOMException}} object whose {{DOMException/name}} attribute has the value
+                {{InvalidStateError}}.
+              </li>
+              <li>Let <var>p</var> be a new {{Promise}}.</li>
+              <li>Run the following steps [=in parallel=]:</li>
+              <li>
+                <ol>
+                  <li>TODO</li>
+                </ol>
+              </li>
+              <li>Return <var>p</var>.</li>
             </ol>
           </dd>
           <dt><dfn>oncapturedzoomlevelchange</dfn></dt>
