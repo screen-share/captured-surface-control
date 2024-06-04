@@ -344,7 +344,23 @@
                   {{PermissionState/"denied"}}, [=reject=] <var>P</var> with a new {{DOMException}}
                   object whose {{DOMException/name}} is {{NotAllowedError}} and abort these steps.
                 </li>
-                <li>TODO</li>
+                <li>
+                  Let [<var>scaledX</var>, <var>scaledY</var>] be the result of the [=scale
+                  coordinates|scale coordinates algorithm=] on
+                  <code
+                    >[<var>action</var>.{{CapturedWheelAction/x}},
+                    <var>action</var>.{{CapturedWheelAction/y}}]</code
+                  >
+                  with respect to [=this=].
+                </li>
+                <li>
+                  Produce a synthetic
+                  <a href="https://w3c.github.io/uievents/#idl-wheelevent">wheel event</a> over
+                  <var>controller</var>.<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a>'s
+                  viewport at coordinates [<var>scaledX</var>, <var>scaledY</var>], with the
+                  horizontal delta set to <var>action</var>.{{CapturedWheelAction/wheelDeltaX}} and
+                  the vertical delta set to <var>action</var>.{{CapturedWheelAction/wheelDeltaY}}.
+                </li>
                 <li>[=Resolve=] <var>P</var>.</li>
               </ol>
             </li>
@@ -435,6 +451,39 @@
           <p>This subroutine assumes that <var>controller</var> is [=actively capturing=].</p>
         </div>
       </section>
+    </section>
+    <section>
+      <h2>Subroutine: Scale coordinates</h2>
+      <p>
+        To <dfn>scale coordinates</dfn> [<var>x</var>, <var>y</var>] with respect to
+        <var>controller</var>, run the following steps:
+      </p>
+      <ol>
+        <li>
+          <!-- TODO: Expose the track's settings as an internal slot and link to that. -->
+          Let <var>settings</var> be the {{MediaTrackSettings}} object associated with
+          <var>source</var>.
+        </li>
+        <li>
+          Let <var>scaleFactorX</var> be
+          <code>(<var>x</var> / <var>settings</var>.{{MediaTrackSettings/width}})</code>.
+        </li>
+        <li>
+          Let <var>scaleFactorY</var> be
+          <code>(<var>y</var> / <var>settings</var>.{{MediaTrackSettings/height}})</code>.
+        </li>
+        <li>Let <var>surfaceWidth</var> be <var>source</var>'s viewport's width.</li>
+        <li>Let <var>surfaceHeight</var> be <var>source</var>'s viewport's height.</li>
+        <li>
+          Let <var>scaledX</var> be
+          <code>(<var>scaleFactorX</var> * <var>surfaceWidth</var>)</code>.
+        </li>
+        <li>
+          Let <var>scaledY</var> be
+          <code>(<var>scaleFactorY</var> * <var>surfaceHeight</var>)</code>.
+        </li>
+        <li>Return [<var>scaledX</var>, <var>scaledY</var>].</li>
+      </ol>
     </section>
 
     <section id="conformance"></section>
