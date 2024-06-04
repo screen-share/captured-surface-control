@@ -136,12 +136,12 @@
       <section id="zoom-control-apis">
         <h2>Zoom-control APIs</h2>
         <pre class="idl">
-        partial interface CaptureController {
-          sequence&lt;long&gt; getSupportedZoomLevels();
-          long getZoomLevel();
-          Promise&lt;undefined&gt; setZoomLevel(long zoomLevel);
-          attribute EventHandler oncapturedzoomlevelchange;
-        };
+          partial interface CaptureController {
+            sequence&lt;long&gt; getSupportedZoomLevels();
+            long getZoomLevel();
+            Promise&lt;undefined&gt; setZoomLevel(long zoomLevel);
+            attribute EventHandler oncapturedzoomlevelchange;
+          };
         </pre>
         <dl data-link-for="CaptureController" data-dfn-for="CaptureController" class="methods">
           <dt><dfn>getSupportedZoomLevels()</dfn></dt>
@@ -157,18 +157,18 @@
                 "{{InvalidStateError}}" {{DOMException}}.
               </li>
               <li>
-                If [=this=].<a data-cite="!screen-capture/#dfn-displaysurfacetype"
-                  >[[\DisplaySurfaceType]]</a
-                >
-                is not a [=display surface/browser=] or [=display surface/window=] [=display
-                surface=], [=exception/throw=] a "{{NotSupportedError}}" {{DOMException}}.
-              </li>
-              <li>
-                Return a monotonically increasing sequence containing all of the values in the
-                [=supported zoom levels=] for the [=display surface=] type [=this=].<a
+                Let <var>surfaceType</var> be [=this=].<a
                   data-cite="!screen-capture/#dfn-displaysurfacetype"
                   >[[\DisplaySurfaceType]]</a
                 >.
+              </li>
+              <li>
+                If <var>surfaceType</var> is not a [=supported display surface type=],
+                [=exception/throw=] a "{{NotSupportedError}}" {{DOMException}}.
+              </li>
+              <li>
+                Return a monotonically increasing sequence containing all of the values in the
+                [=supported zoom levels=] for <var>surfaceType</var>.
               </li>
             </ol>
           </dd>
@@ -188,8 +188,8 @@
                 If [=this=].<a data-cite="!screen-capture/#dfn-displaysurfacetype"
                   >[[\DisplaySurfaceType]]</a
                 >
-                is not a [=display surface/browser=] or [=display surface/window=] [=display
-                surface=], [=exception/throw=] a "{{NotSupportedError}}" {{DOMException}}.
+                is not a [=supported display surface type=], [=exception/throw=] a
+                "{{NotSupportedError}}" {{DOMException}}.
               </li>
               <li>
                 Return [=this=].<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a>'s [=zoom
@@ -211,23 +211,22 @@
                 {{InvalidStateError}}.
               </li>
               <li>
-                If [=this=].<a data-cite="!screen-capture/#dfn-displaysurfacetype"
-                  >[[\DisplaySurfaceType]]</a
-                >
-                is not a [=display surface/browser=] or [=display surface/window=] [=display
-                surface=], return a promise [=reject|rejected=] with a {{DOMException}} object whose
-                {{DOMException/name}} attribute has the value {{NotSupportedError}}.
-              </li>
-              <li>Let <var>targetZoomLevel</var> be the method's first argument.</li>
-              <li>
-                Let <var>T</var> be [=this=].<a data-cite="!screen-capture/#dfn-displaysurfacetype"
+                Let <var>surfaceType</var> be [=this=].<a
+                  data-cite="!screen-capture/#dfn-displaysurfacetype"
                   >[[\DisplaySurfaceType]]</a
                 >.
               </li>
               <li>
-                If <var>targetZoomLevel</var> is not included in the user agent's set of [=supported
-                zoom levels=] for <var>T</var>, return a promise [=reject|rejected=] with a
+                If <var>surfaceType</var> is not a [=display surface/browser=] or [=display
+                surface/window=] [=display surface=], return a promise [=reject|rejected=] with a
                 {{DOMException}} object whose {{DOMException/name}} attribute has the value
+                {{NotSupportedError}}.
+              </li>
+              <li>Let <var>targetZoomLevel</var> be the method's first argument.</li>
+              <li>
+                If <var>targetZoomLevel</var> is not included in the user agent's set of [=supported
+                zoom levels=] for <var>surfaceType</var>, return a promise [=reject|rejected=] with
+                a {{DOMException}} object whose {{DOMException/name}} attribute has the value
                 {{InvalidStateError}}.
               </li>
               <li>Let <var>P</var> be a new {{Promise}}.</li>
@@ -277,15 +276,33 @@
         <ol>
           <!-- TODO: Fix the export of CaptureController's internal slots and use them. -->
           <li>
-            If <var>C</var>.<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a> is
-            <code>null</code>, return <code>false</code>.
+            Let <var>source</var> be <var>C</var>.<a data-cite="!screen-capture/#dfn-source"
+              >[[\Source]]</a
+            >.
           </li>
+          <li>If <var>source</var> is <code>null</code>, return <code>false</code>.</li>
           <li>
-            If <var>C</var>.<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a> has been
-            <a data-cite="GETUSERMEDIA#source-stopped">stopped</a>, return <code>false</code>.
+            If <var>source</var> has been <a data-cite="GETUSERMEDIA#source-stopped">stopped</a>,
+            return <code>false</code>.
           </li>
           <li>Return <code>true</code>.</li>
         </ol>
+      </section>
+      <section>
+        <h2>Subroutine: Supported display surface type</h2>
+        <p>
+          To determine if a [=display surface=] <var>surfaceType</var> is
+          <dfn>supported display surface type</dfn>, run the following steps:
+        </p>
+        <ol>
+          <li>
+            If <var>surfaceType</var> is [=display surface/browser=], return <code>true</code>.
+          </li>
+          <li>Return <code>false</code>.</li>
+        </ol>
+        <div class="note">
+          <p>Whether [=display surface/window=] should be supported is under discussion.</p>
+        </div>
       </section>
     </section>
 
