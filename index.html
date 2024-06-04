@@ -250,7 +250,6 @@
                   <li>
                     Set [=this=].<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a>'s [=zoom
                     level=] to <var>targetZoomLevel</var>.
-                    <!-- TODO: Mention the effect this step has on the relevant events. -->
                   </li>
                   <li>[=Resolve=] <var>P</var>.</li>
                 </ol>
@@ -259,7 +258,25 @@
             </ol>
           </dd>
           <dt><dfn>oncapturedzoomlevelchange</dfn></dt>
-          <dd>TODO</dd>
+          <dd>
+            <p>
+              The user agent MUST fire a blank event on this {{EventHandler}} whenever [=this=].<a
+                data-cite="!screen-capture/#dfn-source"
+                >[[\Source]]</a
+              >'s [=zoom level=] changes.
+            </p>
+            <div class="note">
+              <p>Examples of causes include:</p>
+              <ul>
+                <li>
+                  The user interacted with the user agent to change the zoom level of a captured
+                  tab.
+                </li>
+                <li>The capturing application called {{CaptureController/setZoomLevel()}}.</li>
+                <li>The user changed the shared [=display surface=], choosing one which has a different [=zoom level=].</li>
+              </ul>
+            </div>
+          </dd>
         </dl>
       </section>
     </section>
