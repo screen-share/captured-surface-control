@@ -86,16 +86,14 @@
         <dfn class="permission export"><code>"captured-surface-control"</code></dfn
         >. Its [=policy-controlled feature/default allowlist=] is <code>"self"</code>.
       </p>
-      <p>
-        Some of the APIs introduced in this specification may be invoked by any document and are not
-        subject to any permissions policy. We define each such API an "ungated Captured Surface
-        Control API", or for short, an <dfn>ungated API</dfn>.
-      </p>
-      <p>
-        Some other APIs in introduced in this specification may only be called by documents that
-        have the <code>"captured-surface-control"</code> permissions policy. We define each such API
-        a "gated Captured Surface Control API", or for short, a <dfn>permission-gated API</dfn>.
-      </p>
+      <div class="note">
+        <p>
+          The API surfaces introduced by this specification can be categorized as either read-access
+          or write-access. Note that only the write-access APIs
+          ({{CaptureController/setZoomLevel}} and {{CaptureController/sendWheel}}) are gated by
+          the "captured-surface-control" permissions policy.
+        </p>
+      </div>
     </section>
 
     <section id="zoom">
@@ -147,8 +145,8 @@
           <dt><dfn>getSupportedZoomLevels()</dfn></dt>
           <dd>
             <p>
-              This [=ungated API=] allows applications to discover the set of [=zoom levels=]
-              supported by the user agent.
+              This method allows applications to discover the set of [=zoom levels=] supported by
+              the user agent.
             </p>
             <p>When invoked, the user agent MUST run the following steps:</p>
             <ol>
@@ -175,8 +173,8 @@
           <dt><dfn>getZoomLevel()</dfn></dt>
           <dd>
             <p>
-              This [=ungated API=] allows applications to discover the captured [=display
-              surface=]'s [=zoom level=].
+              This method allows applications to discover the captured [=display surface=]'s [=zoom
+              level=].
             </p>
             <p>When invoked, the user agent MUST run the following steps:</p>
             <ol>
@@ -200,8 +198,8 @@
           <dt><dfn>setZoomLevel()</dfn></dt>
           <dd>
             <p>
-              This [=permission-gated API=] allows applications to set the captured [=display
-              surface=]'s [=zoom level=].
+              This method allows applications to set the captured [=display surface=]'s [=zoom
+              level=].
             </p>
             <p>When invoked, the user agent MUST run the following steps:</p>
             <ol>
@@ -273,7 +271,10 @@
                   tab.
                 </li>
                 <li>The capturing application called {{CaptureController/setZoomLevel()}}.</li>
-                <li>The user changed the shared [=display surface=], choosing one which has a different [=zoom level=].</li>
+                <li>
+                  The user changed the shared [=display surface=], choosing one which has a
+                  different [=zoom level=].
+                </li>
               </ul>
             </div>
           </dd>
@@ -316,7 +317,7 @@
         <dt><dfn>sendWheel()</dfn></dt>
         <dd>
           <p>
-            This [=permission-gated API=] allows applications to deliver a synthetic
+            This method allows applications to deliver a synthetic
             <a href="https://w3c.github.io/uievents/#idl-wheelevent">wheel event</a> over the
             viewport of a captured [=display surface=].
           </p>
