@@ -64,8 +64,11 @@ dictionary CapturedWheelAction {
 
 partial interface CaptureController {
   Promise<undefined> sendWheel(CapturedWheelAction action);
+  Promise<undefined> captureWheel(HTMLElement? element);
 };
 ```
+
+#### SendWheel
 
 Using `sendWheel()`, a capturing application can deliver [wheel events](https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event) of its chosen magnitude over coordinates of its choosing within a captured surface's viewport. The event is indistinguishable to the captured application from direct user interaction.
 
@@ -107,6 +110,36 @@ The application therefore uses `translateCoordinates()` to translate the offsets
 Educating the users that scrolling over the preview-tile is a possibility can be done in any number of ways. Below is an illustration of one possibility.
 
 ![image](https://github.com/screen-share/captured-surface-control/assets/22117736/c6e7aab6-54e2-4c71-837f-84c73b57216f)
+
+#### CaptureWheel
+
+A simplified way to forward [wheel events](https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event)
+is to use `captureWheel`, which automatically forwards wheel events from a given
+[HTML element](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement)
+to the captured surface's viewport.
+
+The main difference with `sendWheel()` is that the application cannot customize
+the events sent to the captured surface or their timing.
+
+A possible way to use the API, assuming a `<video>` element called `'previewTile'`
+is employed by the capturing application, follows:
+```js
+// Having obtained the user’s permission, we can now relay subsequent wheel
+// events to the captured tab.
+const previewTile = document.querySelector('video');
+await controller.captureWheel(previewTile);
+```
+This is roughly equivalent to the `sendWheel()` example above.
+`captureWheel` can be used with any type of element, not just `<video>`.
+For example, if the `<video>` is inside a `<div>`, it is ok to use
+captureWheel with the `<div>` element.
+
+To stop the forwarding of wheel events, it suffices to pass `null` to
+`captureWheel`, as follows:
+```js
+// Stop forwarding wheel events.
+await controller.captureWheel(nullptr);
+```
 
 ## Zooming
 
