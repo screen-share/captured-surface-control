@@ -124,9 +124,10 @@ the events sent to the captured surface or their timing.
 A possible way to use the API, assuming a `<video>` element called `'previewTile'`
 is employed by the capturing application, follows:
 ```js
-// Having obtained the user’s permission, we can now relay subsequent wheel
-// events to the captured tab.
+const controller = new CaptureController();
+const stream = await navigator.mediaDevices.getDisplayMedia({ controller });
 const previewTile = document.querySelector('video');
+previewTile.srcObject = stream;
 await controller.captureWheel(previewTile);
 ```
 This is roughly equivalent to the `sendWheel()` example above.
