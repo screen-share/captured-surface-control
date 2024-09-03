@@ -635,6 +635,10 @@
                 request is {{PermissionState/"denied"}}, abort these steps.
               </li>
               <li>
+                If <var>event</var>.{{Event/isTrusted}} is <code>false</code>,
+                abort these steps.
+              </li>
+              <li>
                 Let [<var>scaledX</var>, <var>scaledY</var>] be the result of
                 the [=scale element coordinates algorithm=]
                 on [<var>event</var>.{{MouseEvent/offsetX}},
