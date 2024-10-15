@@ -89,9 +89,9 @@
       <div class="note">
         <p>
           The API surfaces introduced by this specification can be categorized as either read-access
-          or write-access. Note that only the write-access APIs
-          ({{CaptureController/setZoomLevel}} and {{CaptureController/sendWheel}}) are gated by
-          the "captured-surface-control" permissions policy.
+          or write-access. Note that only the write-access APIs ({{CaptureController/setZoomLevel}}
+          and {{CaptureController/sendWheel}}) are gated by the "captured-surface-control"
+          permissions policy.
         </p>
       </div>
     </section>
@@ -317,8 +317,8 @@
         };
       </pre>
 
-      Let <dfn data-dfn-for="CaptureController">[[\CaptureWheelElement]]</dfn>
-      and <dfn data-dfn-for="CaptureController">[[\CaptureWheelEventListener]]</dfn>
+      Let <dfn data-dfn-for="CaptureController">[[\CaptureWheelElement]]</dfn> and
+      <dfn data-dfn-for="CaptureController">[[\CaptureWheelEventListener]]</dfn>
       be internal slots of {{CaptureController}}, initialized as follows:
       <ol>
         <li>Set {{CaptureController/[[CaptureWheelElement]]}} to <code>null</code>.</li>
@@ -357,7 +357,8 @@
               attribute has the value {{InvalidStateError}}.
             </li>
             <li>Let <var>P</var> be a new {{Promise}}.</li>
-            <li>Run the following steps [=in parallel=]:
+            <li>
+              Run the following steps [=in parallel=]:
               <ol>
                 <li>
                   If the [=relevant global object=]'s [=navigable=]'s [=top-level traversable=] does
@@ -422,7 +423,8 @@
             </li>
             <li>Let <var>element</var> be the method's first argument.</li>
             <li>Let <var>P</var> be a new {{Promise}}.</li>
-            <li>Run the following steps [=in parallel=]:
+            <li>
+              Run the following steps [=in parallel=]:
               <ol>
                 <li>
                   If the [=relevant global object=]'s [=navigable=]'s [=top-level traversable=] does
@@ -437,40 +439,46 @@
                   {{PermissionState/"denied"}}, [=reject=] <var>P</var> with a new {{DOMException}}
                   object whose {{DOMException/name}} is {{NotAllowedError}} and abort these steps.
                 </li>
-                <li>If  [=this=].{{CaptureController/[[CaptureWheelElement]]}} is not <code>null</code>, 
-                  [=remove an event listener=] with  [=this=].{{CaptureController/[[CaptureWheelElement]]}}
-                  as <var>eventTarget</var> and  [=this=].{{CaptureController/[[CaptureWheelEventListener]]}}
-                  as <var>listener</var>.
+                <li>
+                  If [=this=].{{CaptureController/[[CaptureWheelElement]]}} is not
+                  <code>null</code>, [=remove an event listener=] with
+                  [=this=].{{CaptureController/[[CaptureWheelElement]]}} as
+                  <var>eventTarget</var> and
+                  [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as
+                  <var>listener</var>.
                 </li>
                 <li>
-                  Set  [=this=].{{CaptureController/[[CaptureWheelElement]]}} to <var>element</var>.
+                  Set [=this=].{{CaptureController/[[CaptureWheelElement]]}} to <var>element</var>.
                 </li>
                 <li>
-                  Set  [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} to <code>null</code>.
+                  Set [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} to
+                  <code>null</code>.
                 </li>
                 <li>
-                  If  [=this=].{{CaptureController/[[CaptureWheelElement]]}} is <code>null</code>,
+                  If [=this=].{{CaptureController/[[CaptureWheelElement]]}} is <code>null</code>,
                   [=resolve=] <var>P</var> and abort these steps.
                 </li>
                 <li>
-                  Set  [=this=].{{CaptureController/[[CaptureWheelEventListener]]}}
-                  to an [=event listener=] defined as follows:
+                  Set [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} to an [=event
+                  listener=] defined as follows:
                   <dl>
                     <dt>type</dt>
                     <dd><code>wheel</code></dd>
                     <dt>[=event listener/callback=]</dt>
-                    <dd>The result of creating a new Web IDL {{EventListener}} 
-                      instance representing a reference to a function of one
-                      argument of type {{Event}} <var>event</var>. This function
-                      executes the [=forward wheel event algorithm=] given
-                      [=this=] and <var>event</var>.
+                    <dd>
+                      The result of creating a new Web IDL {{EventListener}} instance representing a
+                      reference to a function of one argument of type {{Event}} <var>event</var>.
+                      This function executes the [=forward wheel event algorithm=] given [=this=]
+                      and <var>event</var>.
                     </dd>
                   </dl>
                 </li>
                 <li>
                   [=Add an event listener=] with
-                  [=this=].{{CaptureController/[[CaptureWheelElement]]}} as <var>eventTarget</var> and
-                  [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as <var>listener</var>.
+                  [=this=].{{CaptureController/[[CaptureWheelElement]]}} as
+                  <var>eventTarget</var> and
+                  [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as
+                  <var>listener</var>.
                 </li>
                 <li>[=Resolve=] <var>P</var>.</li>
               </ol>
@@ -602,14 +610,10 @@
         <h2>Subroutine: Forward wheel event</h2>
         <p>
           The <dfn>forward wheel event algorithm</dfn> takes a {{CaptureController}}
-          <var>controller</var> and a {{WheelEvent}} <var>event</var>, and runs
-           the following steps:
+          <var>controller</var> and a {{WheelEvent}} <var>event</var>, and runs the following steps:
         </p>
         <ol>
-          <li>
-            If <var>controller</var> is not [=actively capturing=], abort these
-            steps.
-          </li>
+          <li>If <var>controller</var> is not [=actively capturing=], abort these steps.</li>
           <li>
             Let <var>surfaceType</var> be <var>controller</var>.<a
               data-cite="!screen-capture/#dfn-displaysurfacetype"
@@ -617,42 +621,41 @@
             >.
           </li>
           <li>
-            If <var>surfaceType</var> is not a [=supported display surface type=],
-            abort these steps.
+            If <var>surfaceType</var> is not a [=supported display surface type=], abort these
+            steps.
           </li>
-          <li>Run the following steps [=in parallel=]:
+          <li>
+            Run the following steps [=in parallel=]:
             <ol>
               <li>
-                If the [=relevant global object=]'s [=navigable=]'s
-                [=top-level traversable=] does NOT have
-                <a data-cite="!HTML/#tlbc-system-focus">system focus</a>,
-                abort these steps.
+                If the [=relevant global object=]'s [=navigable=]'s [=top-level traversable=] does
+                NOT have
+                <a data-cite="!HTML/#tlbc-system-focus">system focus</a>, abort these steps.
               </li>
               <li>
-                [=Request permission to use=] a {{PermissionDescriptor}} with
-                its {{PermissionDescriptor/name}} member set to
-                <code>"captured-surface-control"</code>. If the result of the
-                request is {{PermissionState/"denied"}}, abort these steps.
+                [=Request permission to use=] a {{PermissionDescriptor}} with its
+                {{PermissionDescriptor/name}} member set to
+                <code>"captured-surface-control"</code>. If the result of the request is
+                {{PermissionState/"denied"}}, abort these steps.
               </li>
               <li>
-                If <var>event</var>.{{Event/isTrusted}} is <code>false</code>,
-                abort these steps.
+                If <var>event</var>.{{Event/isTrusted}} is <code>false</code>, abort these steps.
               </li>
               <li>
-                Let [<var>scaledX</var>, <var>scaledY</var>] be the result of
-                the [=scale element coordinates algorithm=]
-                on [<var>event</var>.{{MouseEvent/offsetX}},
+                Let [<var>scaledX</var>, <var>scaledY</var>] be the result of the [=scale element
+                coordinates algorithm=] on [<var>event</var>.{{MouseEvent/offsetX}},
                 <var>event</var>.{{MouseEvent/offsetY}}] and
                 [=this=].{{CaptureController/[[CaptureWheelElement]]}}.
               </li>
               <li>
-                [=Fire an event=] named `"wheel"` using {{WheelEvent}} with
-                the {{MouseEvent/x}} attribute initialized to <var>scaledX</var>,
-                the {{MouseEvent/y}} attribute initialized to <var>scaledY</var>,
-                the {{WheelEvent/deltaX}} attribute initialized to <var>event</var>.{{WheelEvent/deltaX}}
-                and the {{WheelEvent/deltaY}} attribute initialized to <var>event</var>.{{WheelEvent/deltaY}},
-                at <var>controller</var>.<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a>'s
-                viewport.
+                [=Fire an event=] named `"wheel"` using {{WheelEvent}} with the {{MouseEvent/x}}
+                attribute initialized to <var>scaledX</var>, the {{MouseEvent/y}} attribute
+                initialized to <var>scaledY</var>, the {{WheelEvent/deltaX}} attribute initialized
+                to <var>event</var>.{{WheelEvent/deltaX}} and the {{WheelEvent/deltaY}} attribute
+                initialized to <var>event</var>.{{WheelEvent/deltaY}}, at <var>controller</var>.<a
+                  data-cite="!screen-capture/#dfn-source"
+                  >[[\Source]]</a
+                >'s viewport.
               </li>
             </ol>
           </li>
@@ -661,21 +664,39 @@
       <section>
         <h2>Subroutine: Scale element coordinates</h2>
         <p>
-          The <dfn>scale element coordinates algorithm</dfn> takes {{double}}
-          coordinates [<var>x</var>, <var>y</var>] and a {{CaptureController}}
-          <var>controller</var>, and run the following steps:
+          The <dfn>scale element coordinates algorithm</dfn> takes {{double}} coordinates
+          [<var>x</var>, <var>y</var>] and a {{CaptureController}} <var>controller</var>, and run
+          the following steps:
         </p>
         <ol>
           <li>
             Let <var>scaleFactorX</var> be
-            <code>(<var>x</var> / <var>controller</var>.{{CaptureController/[[CaptureWheelElement]]}}.{{Element/getBoundingClientRect()}}.{{DOMRect/width}})</code>.
+            <code
+              >(<var>x</var> /
+              <var>controller</var
+              >.{{CaptureController/[[CaptureWheelElement]]}}.{{Element/getBoundingClientRect()}}.{{DOMRect/width}})</code
+            >.
           </li>
           <li>
             Let <var>scaleFactorX</var> be
-            <code>(<var>x</var> / <var>controller</var>.{{CaptureController/[[CaptureWheelElement]]}}.{{Element/getBoundingClientRect()}}.{{DOMRect/height}})</code>.
+            <code
+              >(<var>x</var> /
+              <var>controller</var
+              >.{{CaptureController/[[CaptureWheelElement]]}}.{{Element/getBoundingClientRect()}}.{{DOMRect/height}})</code
+            >.
           </li>
-          <li>Let <var>surfaceWidth</var> be <var>controller</var>.<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a>'s viewport's width.</li>
-          <li>Let <var>surfaceHeight</var> be <var>controller</var>.<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a>'s viewport's height.</li>
+          <li>
+            Let <var>surfaceWidth</var> be <var>controller</var>.<a
+              data-cite="!screen-capture/#dfn-source"
+              >[[\Source]]</a
+            >'s viewport's width.
+          </li>
+          <li>
+            Let <var>surfaceHeight</var> be <var>controller</var>.<a
+              data-cite="!screen-capture/#dfn-source"
+              >[[\Source]]</a
+            >'s viewport's height.
+          </li>
           <li>
             Let <var>scaledX</var> be
             <code>(<var>scaleFactorX</var> * <var>surfaceWidth</var>)</code>.
@@ -690,7 +711,7 @@
           <p>This subroutine assumes that <var>controller</var> is [=actively capturing=].</p>
         </div>
       </section>
-      </section>
+    </section>
     <section id="conformance"></section>
   </body>
 </html>
