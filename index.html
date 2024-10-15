@@ -90,7 +90,7 @@
         <p>
           The API surfaces introduced by this specification can be categorized as either read-access
           or write-access. Note that only the write-access APIs ({{CaptureController/setZoomLevel}}
-          and {{CaptureController/sendWheel}}) are gated by the "captured-surface-control"
+          and {{CaptureController/captureWheel}}) are gated by the "captured-surface-control"
           permissions policy.
         </p>
       </div>
@@ -284,35 +284,9 @@
 
     <section id="scrolling">
       <h1>Scroll</h1>
-      <h2><code>CapturedWheelAction</code></h2>
-      <pre class="idl">
-        dictionary CapturedWheelAction {
-          long x = 0;
-          long y = 0;
-          long wheelDeltaX = 0;
-          long wheelDeltaY = 0;
-        };
-      </pre>
-      <dl data-link-for="CapturedWheelAction" data-dfn-for="CapturedWheelAction">
-        <dt><dfn>x</dfn></dt>
-        <dd>
-          The horizontal offset of the point where the wheel event should be delivered. 0 represents
-          the left edge of the viewport.
-        </dd>
-        <dt><dfn>y</dfn></dt>
-        <dd>
-          The vertical offset of the point where the wheel event should be delivered. 0 represents
-          the upper edge of the viewport.
-        </dd>
-        <dt><dfn>wheelDeltaX</dfn></dt>
-        <dd>The horizontal scroll amount, in pixels.</dd>
-        <dt><dfn>wheelDeltaY</dfn></dt>
-        <dd>The vertical scroll amount, in pixels.</dd>
-      </dl>
       <h2>{{CaptureController}}</h2>
       <pre class="idl">
         partial interface CaptureController {
-          Promise&lt;undefined&gt; sendWheel(optional CapturedWheelAction action = {});
           Promise&lt;undefined&gt; captureWheel(HTMLElement element);
         };
       </pre>
@@ -325,77 +299,6 @@
         <li>Set {{CaptureController/[[CaptureWheelEventListener]]}} to <code>null</code>.</li>
       </ol>
       <dl data-link-for="CaptureController" data-dfn-for="CaptureController" class="methods">
-        <dt><dfn>sendWheel()</dfn></dt>
-        <dd>
-          <p>
-            This method allows applications to deliver a synthetic
-            <a href="https://w3c.github.io/uievents/#idl-wheelevent">wheel event</a> over the
-            viewport of a captured [=display surface=].
-          </p>
-          <p>When invoked, the user agent MUST run the following steps:</p>
-          <ol>
-            <li>
-              If [=this=] is not [=actively capturing=], return a promise [=reject|rejected=] with a
-              {{DOMException}} object whose {{DOMException/name}} attribute has the value
-              {{InvalidStateError}}.
-            </li>
-            <li>
-              Let <var>surfaceType</var> be [=this=].<a
-                data-cite="!screen-capture/#dfn-displaysurfacetype"
-                >[[\DisplaySurfaceType]]</a
-              >.
-            </li>
-            <li>
-              If <var>surfaceType</var> is not a [=supported display surface type=], return a
-              promise [=reject|rejected=] with a {{DOMException}} object whose {{DOMException/name}}
-              attribute has the value {{NotSupportedError}}.
-            </li>
-            <li>Let <var>action</var> be the method's first argument.</li>
-            <li>
-              If <var>action</var> is not a [=valid wheel action=] for [=this=], return a promise
-              [=reject|rejected=] with a {{DOMException}} object whose {{DOMException/name}}
-              attribute has the value {{InvalidStateError}}.
-            </li>
-            <li>Let <var>P</var> be a new {{Promise}}.</li>
-            <li>
-              Run the following steps [=in parallel=]:
-              <ol>
-                <li>
-                  If the [=relevant global object=]'s [=navigable=]'s [=top-level traversable=] does
-                  NOT have <a data-cite="!HTML/#tlbc-system-focus">system focus</a>, [=reject=]
-                  <var>P</var> with a new {{DOMException}} object whose {{DOMException/name}}
-                  attribute has the value {{NotFoundError}} and abort these steps.
-                </li>
-                <li>
-                  [=Request permission to use=] a {{PermissionDescriptor}} with its
-                  {{PermissionDescriptor/name}} member set to
-                  <code>"captured-surface-control"</code>. If the result of the request is
-                  {{PermissionState/"denied"}}, [=reject=] <var>P</var> with a new {{DOMException}}
-                  object whose {{DOMException/name}} is {{NotAllowedError}} and abort these steps.
-                </li>
-                <li>
-                  Let [<var>scaledX</var>, <var>scaledY</var>] be the result of the [=scale
-                  coordinates|scale coordinates algorithm=] on
-                  <code
-                    >[<var>action</var>.{{CapturedWheelAction/x}},
-                    <var>action</var>.{{CapturedWheelAction/y}}]</code
-                  >
-                  with respect to [=this=].
-                </li>
-                <li>
-                  Produce a synthetic
-                  <a href="https://w3c.github.io/uievents/#idl-wheelevent">wheel event</a> over
-                  <var>controller</var>.<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a>'s
-                  viewport at coordinates [<var>scaledX</var>, <var>scaledY</var>], with the
-                  horizontal delta set to <var>action</var>.{{CapturedWheelAction/wheelDeltaX}} and
-                  the vertical delta set to <var>action</var>.{{CapturedWheelAction/wheelDeltaY}}.
-                </li>
-                <li>[=Resolve=] <var>P</var>.</li>
-              </ol>
-            </li>
-            <li>Return <var>P</var>.</li>
-          </ol>
-        </dd>
         <dt><dfn>captureWheel()</dfn></dt>
         <dd>
           <p>
@@ -527,83 +430,6 @@
         </ol>
         <div class="note">
           <p>Whether [=display surface/window=] should be supported is under discussion.</p>
-        </div>
-      </section>
-      <section>
-        <h2>Subroutine: Valid wheel action</h2>
-        <p>
-          To determine if a {{CapturedWheelAction}} <var>action</var> is a
-          <dfn>valid wheel action</dfn> for {{CaptureController}} <var>controller</var>, run the
-          following steps:
-        </p>
-        <ol>
-          <li>
-            Let <var>source</var> be <var>controller</var>.<a
-              data-cite="!screen-capture/#dfn-source"
-              >[[\Source]]</a
-            >.
-          </li>
-          <li>
-            <!-- TODO: Expose the track's settings as an internal slot and link to that. -->
-            Let <var>settings</var> be the {{MediaTrackSettings}} object associated with
-            <var>source</var>.
-          </li>
-          <li>
-            If <var>action</var>.{{CapturedWheelAction/x}} is lesser than 0, return
-            <code>false</code>.
-          </li>
-          <li>
-            If <var>action</var>.{{CapturedWheelAction/y}} is lesser than 0, return
-            <code>false</code>.
-          </li>
-          <li>
-            If <var>action</var>.{{CapturedWheelAction/x}} is greater than or equal to
-            <var>settings</var>.{{MediaTrackSettings/width}}, return <code>false</code>.
-          </li>
-          <li>
-            If <var>action</var>.{{CapturedWheelAction/y}} is greater than or equal to
-            <var>settings</var>.{{MediaTrackSettings/height}}, return <code>false</code>.
-          </li>
-          <li>Return <code>true</code>.</li>
-        </ol>
-        <div class="note">
-          <p>This subroutine assumes that <var>controller</var> is [=actively capturing=].</p>
-        </div>
-      </section>
-      <section>
-        <h2>Subroutine: Scale coordinates</h2>
-        <p>
-          To <dfn>scale coordinates</dfn> [<var>x</var>, <var>y</var>] with respect to
-          <var>controller</var>, run the following steps:
-        </p>
-        <ol>
-          <li>
-            <!-- TODO: Expose the track's settings as an internal slot and link to that. -->
-            Let <var>settings</var> be the {{MediaTrackSettings}} object associated with
-            <var>source</var>.
-          </li>
-          <li>
-            Let <var>scaleFactorX</var> be
-            <code>(<var>x</var> / <var>settings</var>.{{MediaTrackSettings/width}})</code>.
-          </li>
-          <li>
-            Let <var>scaleFactorY</var> be
-            <code>(<var>y</var> / <var>settings</var>.{{MediaTrackSettings/height}})</code>.
-          </li>
-          <li>Let <var>surfaceWidth</var> be <var>source</var>'s viewport's width.</li>
-          <li>Let <var>surfaceHeight</var> be <var>source</var>'s viewport's height.</li>
-          <li>
-            Let <var>scaledX</var> be
-            <code>(<var>scaleFactorX</var> * <var>surfaceWidth</var>)</code>.
-          </li>
-          <li>
-            Let <var>scaledY</var> be
-            <code>(<var>scaleFactorY</var> * <var>surfaceHeight</var>)</code>.
-          </li>
-          <li>Return [<var>scaledX</var>, <var>scaledY</var>].</li>
-        </ol>
-        <div class="note">
-          <p>This subroutine assumes that <var>controller</var> is [=actively capturing=].</p>
         </div>
       </section>
       <section>
