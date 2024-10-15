@@ -5,6 +5,7 @@
     <title>Captured Surface Control</title>
     <script class="remove" src="captured-surface-control.js" type="text/javascript"></script>
     <script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove"></script>
+    <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <section id="abstract">
@@ -287,18 +288,37 @@
       <h2>{{CaptureController}}</h2>
       <pre class="idl">
         partial interface CaptureController {
+          constructor();
           Promise&lt;undefined&gt; captureWheel(HTMLElement element);
         };
       </pre>
-
-      Let <dfn data-dfn-for="CaptureController">[[\CaptureWheelElement]]</dfn> and
-      <dfn data-dfn-for="CaptureController">[[\CaptureWheelEventListener]]</dfn>
-      be internal slots of {{CaptureController}}, initialized as follows:
-      <ol>
-        <li>Set {{CaptureController/[[CaptureWheelElement]]}} to <code>null</code>.</li>
-        <li>Set {{CaptureController/[[CaptureWheelEventListener]]}} to <code>null</code>.</li>
-      </ol>
       <dl data-link-for="CaptureController" data-dfn-for="CaptureController" class="methods">
+        <dt><dfn>constructor</dfn></dt>
+        <dd>
+          <p>
+            {{CaptureController}}'s
+            <a data-cite="!screen-capture/#dom-capturecontroller-constructor">constructor</a> is
+            extended to also define and initialize the following internal slots:
+          </p>
+          <table class="simple">
+            <thead>
+              <tr>
+                <th>Internal Slot</th>
+                <th>Initial value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><dfn>[[\CaptureWheelElement]]</dfn></td>
+                <td><code>null</code></td>
+              </tr>
+              <tr>
+                <td><dfn>[[\CaptureWheelEventListener]]</dfn></td>
+                <td><code>null</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </dd>
         <dt><dfn>captureWheel()</dfn></dt>
         <dd>
           <p>
