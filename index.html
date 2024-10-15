@@ -205,6 +205,16 @@
             <p>When invoked, the user agent MUST run the following steps:</p>
             <ol>
               <li>
+                Let |document:Document| be the [=relevant global object=]'s [=associated
+                `Document`=].
+              </li>
+              <li>
+                If |document| is not [=allowed to use=] the
+                <code>"captured-surface-control"</code> feature, return a promise
+                [=reject|rejected=] with a {{DOMException}} object whose {{DOMException/name}}
+                attribute has the value {{NotAllowedError}}.
+              </li>
+              <li>
                 If [=this=] is not [=actively capturing=], return a promise [=reject|rejected=] with
                 a {{DOMException}} object whose {{DOMException/name}} attribute has the value
                 {{InvalidStateError}}.
@@ -328,6 +338,15 @@
           </p>
           <p>When invoked, the user agent MUST run the following steps:</p>
           <ol>
+            <li>
+              Let |document:Document| be the [=relevant global object=]'s [=associated `Document`=].
+            </li>
+            <li>
+              If |document| is not [=allowed to use=] the
+              <code>"captured-surface-control"</code> feature, return a promise [=reject|rejected=]
+              with a {{DOMException}} object whose {{DOMException/name}} attribute has the value
+              {{NotAllowedError}}.
+            </li>
             <li>
               If [=this=] is not [=actively capturing=], return a promise [=reject|rejected=] with a
               {{DOMException}} object whose {{DOMException/name}} attribute has the value
