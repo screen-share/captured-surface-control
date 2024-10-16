@@ -500,10 +500,8 @@
             Run the following steps [=in parallel=]:
             <ol>
               <li>
-                [=Request permission to use=] a {{PermissionDescriptor}} with its
-                {{PermissionDescriptor/name}} member set to
-                <code>"captured-surface-control"</code>. If the result of the request is
-                {{PermissionState/"denied"}}, abort these steps.
+                [=Get the current permission state=] of <a>"captured-surface-control"</a>. If the
+                result is NOT {{PermissionState/"granted"}}, abort these steps.
               </li>
               <li>
                 If <var>event</var>.{{Event/isTrusted}} is <code>false</code>, abort these steps.
