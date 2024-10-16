@@ -347,17 +347,14 @@
                   a {{DOMException}} object whose {{DOMException/name}} attribute has the value
                   {{InvalidStateError}}.
                   <div class="note">
-                    <p>This step ensures that:</p>
-                    <ul>
-                      <li>Permission prompts may not be shown without [=transient activation=].</li>
-                      <li>
-                        When a permission promopt is not required,
-                        {{CaptureController/captureWheel()}} may be called immediately after
-                        {{MediaDevices/getDisplayMedia()}} resolves, even if the [=transient
-                        activation=] that permitted the call to {{CaptureController/captureWheel()}}
-                        has since expired.
-                      </li>
-                    </ul>
+                    <p>
+                      This step ensures that on the one hand, permission prompts are not be shown
+                      without [=transient activation=], while on the one hand, if the permission is
+                      already {{PermissionState/"granted"}}, {{CaptureController/captureWheel()}}
+                      may be called immediately after {{MediaDevices/getDisplayMedia()}} resolves,
+                      even if the [=transient activation=] that permitted the call to
+                      {{CaptureController/captureWheel()}} has since expired.
+                    </p>
                   </div>
                 </li>
                 <li>
