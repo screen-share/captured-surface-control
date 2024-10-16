@@ -10,16 +10,14 @@
   <body>
     <section id="abstract">
       <p>
-        Consider a Web application <var>capturer</var> which has used
-        {{MediaDevices/getDisplayMedia()}} to start capturing another [=display surface=] we call
-        <var>capturee</var>. This specification introduces a set of APIs that allow
-        <var>capturer</var> the following new capabilities:
+        Consider a Web application |capturer| which has used {{MediaDevices/getDisplayMedia()}} to
+        start capturing another [=display surface=] we call |capturee|. This specification
+        introduces a set of APIs that allow |capturer| the following new capabilities:
       </p>
       <ul>
-        <li>Read and write <var>capturee</var>'s [=zoom level=].</li>
+        <li>Read and write |capturee|'s [=zoom level=].</li>
         <li>
-          Deliver a wheel event over <var>capturee</var>'s viewport at coordinates of
-          <var>capturer</var>'s choosing.
+          Deliver a wheel event over |capturee|'s viewport at coordinates of |capturer|'s choosing.
         </li>
       </ul>
       <p>
@@ -126,10 +124,10 @@
           </li>
         </ul>
         <p>
-          For a given [=display surface=] of type <var>surfaceType</var>, we define the user agent's
-          set of <dfn>supported zoom levels</dfn> for <var>surfaceType</var> as a non-empty set of
-          integers including at least the [=default zoom level=] (100), and not including any
-          integers lesser than 1.
+          For a given [=display surface=] of type |surfaceType|, we define the user agent's set of
+          <dfn>supported zoom levels</dfn> for |surfaceType| as a non-empty set of integers
+          including at least the [=default zoom level=] (100), and not including any integers lesser
+          than 1.
         </p>
       </section>
       <section id="zoom-control-apis">
@@ -156,18 +154,17 @@
                 "{{InvalidStateError}}" {{DOMException}}.
               </li>
               <li>
-                Let <var>surfaceType</var> be [=this=].<a
-                  data-cite="!screen-capture/#dfn-displaysurfacetype"
+                Let |surfaceType| be [=this=].<a data-cite="!screen-capture/#dfn-displaysurfacetype"
                   >[[\DisplaySurfaceType]]</a
                 >.
               </li>
               <li>
-                If <var>surfaceType</var> is not a [=supported display surface type=],
-                [=exception/throw=] a "{{NotSupportedError}}" {{DOMException}}.
+                If |surfaceType| is not a [=supported display surface type=], [=exception/throw=] a
+                "{{NotSupportedError}}" {{DOMException}}.
               </li>
               <li>
                 Return a monotonically increasing sequence containing all of the values in the
-                [=supported zoom levels=] for <var>surfaceType</var>.
+                [=supported zoom levels=] for |surfaceType|.
               </li>
             </ol>
           </dd>
@@ -220,43 +217,47 @@
                 {{InvalidStateError}}.
               </li>
               <li>
-                Let <var>surfaceType</var> be [=this=].<a
-                  data-cite="!screen-capture/#dfn-displaysurfacetype"
+                Let |surfaceType| be [=this=].<a data-cite="!screen-capture/#dfn-displaysurfacetype"
                   >[[\DisplaySurfaceType]]</a
                 >.
               </li>
               <li>
-                If <var>surfaceType</var> is not a [=supported display surface type=], return a
-                promise [=reject|rejected=] with a {{DOMException}} object whose
-                {{DOMException/name}} attribute has the value {{NotSupportedError}}.
+                If |surfaceType| is not a [=supported display surface type=], return a promise
+                [=reject|rejected=] with a {{DOMException}} object whose {{DOMException/name}}
+                attribute has the value {{NotSupportedError}}.
               </li>
-              <li>Let <var>targetZoomLevel</var> be the method's first argument.</li>
+              <li>Let |targetZoomLevel| be the method's first argument.</li>
               <li>
-                If <var>targetZoomLevel</var> is not included in the user agent's set of [=supported
-                zoom levels=] for <var>surfaceType</var>, return a promise [=reject|rejected=] with
-                a {{DOMException}} object whose {{DOMException/name}} attribute has the value
+                If |targetZoomLevel| is not included in the user agent's set of [=supported zoom
+                levels=] for |surfaceType|, return a promise [=reject|rejected=] with a
+                {{DOMException}} object whose {{DOMException/name}} attribute has the value
                 {{InvalidStateError}}.
               </li>
-              <li>Let <var>P</var> be a new {{Promise}}.</li>
+              <li>Let |P| be a new {{Promise}}.</li>
               <li>Run the following steps [=in parallel=]:</li>
               <li>
                 <ol>
                   <li>
+                    If the [=relevant global object=]'s [=navigable=]'s [=top-level traversable=]
+                    does NOT have <a data-cite="!HTML/#tlbc-system-focus">system focus</a>,
+                    [=reject=] |P| with a new {{DOMException}} object whose {{DOMException/name}}
+                    attribute has the value {{NotFoundError}} and abort these steps.
+                  </li>
+                  <li>
                     [=Request permission to use=] a {{PermissionDescriptor}} with its
                     {{PermissionDescriptor/name}} member set to
-                    <a>"captured-surface-control"</a>. If the result of the request is
-                    {{PermissionState/"denied"}}, [=reject=] <var>P</var> with a new
-                    {{DOMException}} object whose {{DOMException/name}} is {{NotAllowedError}} and
-                    abort these steps.
+                    <code>"captured-surface-control"</code>. If the result of the request is
+                    {{PermissionState/"denied"}}, [=reject=] |P| with a new {{DOMException}} object
+                    whose {{DOMException/name}} is {{NotAllowedError}} and abort these steps.
                   </li>
                   <li>
                     Set [=this=].<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a>'s [=zoom
-                    level=] to <var>targetZoomLevel</var>.
+                    level=] to |targetZoomLevel|.
                   </li>
-                  <li>[=Resolve=] <var>P</var>.</li>
+                  <li>[=Resolve=] |P|.</li>
                 </ol>
               </li>
-              <li>Return <var>P</var>.</li>
+              <li>Return |P|.</li>
             </ol>
           </dd>
           <dt><dfn>oncapturedzoomlevelchange</dfn></dt>
@@ -346,66 +347,47 @@
               {{InvalidStateError}}.
             </li>
             <li>
-              Let <var>surfaceType</var> be [=this=].<a
-                data-cite="!screen-capture/#dfn-displaysurfacetype"
+              Let |surfaceType| be [=this=].<a data-cite="!screen-capture/#dfn-displaysurfacetype"
                 >[[\DisplaySurfaceType]]</a
               >.
             </li>
             <li>
-              If <var>surfaceType</var> is not a [=supported display surface type=], return a
-              promise [=reject|rejected=] with a {{DOMException}} object whose {{DOMException/name}}
+              If |surfaceType| is not a [=supported display surface type=], return a promise
+              [=reject|rejected=] with a {{DOMException}} object whose {{DOMException/name}}
               attribute has the value {{NotSupportedError}}.
             </li>
-            <li>Let <var>element</var> be the method's first argument.</li>
-            <li>Let <var>P</var> be a new {{Promise}}.</li>
+            <li>Let |element| be the method's first argument.</li>
+            <li>Let |P| be a new {{Promise}}.</li>
             <li>
               Run the following steps [=in parallel=]:
               <ol>
                 <li>
-                  [=Get the current permission state=] of <a>"captured-surface-control"</a>. If the
-                  result is NOT {{PermissionState/"granted"}}, and the [=relevant global object=]
-                  does NOT have [=transient activation=], return a promise [=reject|rejected=] with
-                  a {{DOMException}} object whose {{DOMException/name}} attribute has the value
-                  {{InvalidStateError}}.
-                  <div class="note">
-                    <p>This step ensures that:</p>
-                    <ul>
-                      <li>Permission prompts may not be shown without [=transient activation=].</li>
-                      <li>
-                        When a permission promopt is not required,
-                        {{CaptureController/captureWheel()}} may be called immediately after
-                        {{MediaDevices/getDisplayMedia()}} resolves, even if the [=transient
-                        activation=] that permitted the call to {{CaptureController/captureWheel()}}
-                        has since expired.
-                      </li>
-                    </ul>
-                  </div>
+                  If the [=relevant global object=]'s [=navigable=]'s [=top-level traversable=] does
+                  NOT have <a data-cite="!HTML/#tlbc-system-focus">system focus</a>, [=reject=] |P|
+                  with a new {{DOMException}} object whose {{DOMException/name}} attribute has the
+                  value {{NotFoundError}} and abort these steps.
                 </li>
                 <li>
                   [=Request permission to use=] a {{PermissionDescriptor}} with its
                   {{PermissionDescriptor/name}} member set to
-                  <a>"captured-surface-control"</a>. If the result of the request is
-                  {{PermissionState/"denied"}}, [=reject=] <var>P</var> with a new {{DOMException}}
-                  object whose {{DOMException/name}} is {{NotAllowedError}} and abort these steps.
+                  <code>"captured-surface-control"</code>. If the result of the request is
+                  {{PermissionState/"denied"}}, [=reject=] |P| with a new {{DOMException}} object
+                  whose {{DOMException/name}} is {{NotAllowedError}} and abort these steps.
                 </li>
                 <li>
                   If [=this=].{{CaptureController/[[CaptureWheelElement]]}} is not
                   <code>null</code>, [=remove an event listener=] with
-                  [=this=].{{CaptureController/[[CaptureWheelElement]]}} as
-                  <var>eventTarget</var> and
-                  [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as
-                  <var>listener</var>.
+                  [=this=].{{CaptureController/[[CaptureWheelElement]]}} as |eventTarget| and
+                  [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as |listener|.
                 </li>
-                <li>
-                  Set [=this=].{{CaptureController/[[CaptureWheelElement]]}} to <var>element</var>.
-                </li>
+                <li>Set [=this=].{{CaptureController/[[CaptureWheelElement]]}} to |element|.</li>
                 <li>
                   Set [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} to
                   <code>null</code>.
                 </li>
                 <li>
                   If [=this=].{{CaptureController/[[CaptureWheelElement]]}} is <code>null</code>,
-                  [=resolve=] <var>P</var> and abort these steps.
+                  [=resolve=] |P| and abort these steps.
                 </li>
                 <li>
                   Set [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} to an [=event
@@ -416,23 +398,21 @@
                     <dt>[=event listener/callback=]</dt>
                     <dd>
                       The result of creating a new Web IDL {{EventListener}} instance representing a
-                      reference to a function of one argument of type {{Event}} <var>event</var>.
-                      This function executes the [=forward wheel event algorithm=] given [=this=]
-                      and <var>event</var>.
+                      reference to a function of one argument of type {{Event}} |event|. This
+                      function executes the [=forward wheel event algorithm=] given [=this=] and
+                      |event|.
                     </dd>
                   </dl>
                 </li>
                 <li>
                   [=Add an event listener=] with
-                  [=this=].{{CaptureController/[[CaptureWheelElement]]}} as
-                  <var>eventTarget</var> and
-                  [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as
-                  <var>listener</var>.
+                  [=this=].{{CaptureController/[[CaptureWheelElement]]}} as |eventTarget| and
+                  [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as |listener|.
                 </li>
-                <li>[=Resolve=] <var>P</var>.</li>
+                <li>[=Resolve=] |P|.</li>
               </ol>
             </li>
-            <li>Return <var>P</var>.</li>
+            <li>Return |P|.</li>
           </ol>
         </dd>
       </dl>
@@ -443,21 +423,18 @@
       <section>
         <h2>Subroutine: Actively capturing</h2>
         <p>
-          To determine if a {{CaptureController}} <var>controller</var> is
+          To determine if a {{CaptureController}} |controller| is
           <dfn>actively capturing</dfn>, run the following steps:
         </p>
         <ol>
           <li>
             <!-- TODO: Fix the export of CaptureController's internal slots and use them. -->
-            Let <var>source</var> be <var>controller</var>.<a
-              data-cite="!screen-capture/#dfn-source"
-              >[[\Source]]</a
-            >.
+            Let |source| be |controller|.<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a>.
           </li>
-          <li>If <var>source</var> is <code>null</code>, return <code>false</code>.</li>
+          <li>If |source| is <code>null</code>, return <code>false</code>.</li>
           <li>
-            If <var>source</var> has been <a data-cite="GETUSERMEDIA#source-stopped">stopped</a>,
-            return <code>false</code>.
+            If |source| has been <a data-cite="GETUSERMEDIA#source-stopped">stopped</a>, return
+            <code>false</code>.
           </li>
           <li>Return <code>true</code>.</li>
         </ol>
@@ -465,13 +442,11 @@
       <section>
         <h2>Subroutine: Supported display surface type</h2>
         <p>
-          To determine if a [=display surface=] <var>surfaceType</var> is
+          To determine if a [=display surface=] |surfaceType| is
           <dfn>supported display surface type</dfn>, run the following steps:
         </p>
         <ol>
-          <li>
-            If <var>surfaceType</var> is [=display surface/browser=], return <code>true</code>.
-          </li>
+          <li>If |surfaceType| is [=display surface/browser=], return <code>true</code>.</li>
           <li>Return <code>false</code>.</li>
         </ol>
         <div class="note">
@@ -481,43 +456,43 @@
       <section>
         <h2>Subroutine: Forward wheel event</h2>
         <p>
-          The <dfn>forward wheel event algorithm</dfn> takes a {{CaptureController}}
-          <var>controller</var> and a {{WheelEvent}} <var>event</var>, and runs the following steps:
+          The <dfn>forward wheel event algorithm</dfn> takes a {{CaptureController}} |controller|
+          and a {{WheelEvent}} |event|, and runs the following steps:
         </p>
         <ol>
-          <li>If <var>controller</var> is not [=actively capturing=], abort these steps.</li>
+          <li>If |controller| is not [=actively capturing=], abort these steps.</li>
           <li>
-            Let <var>surfaceType</var> be <var>controller</var>.<a
-              data-cite="!screen-capture/#dfn-displaysurfacetype"
+            Let |surfaceType| be |controller|.<a data-cite="!screen-capture/#dfn-displaysurfacetype"
               >[[\DisplaySurfaceType]]</a
             >.
           </li>
-          <li>
-            If <var>surfaceType</var> is not a [=supported display surface type=], abort these
-            steps.
-          </li>
+          <li>If |surfaceType| is not a [=supported display surface type=], abort these steps.</li>
           <li>
             Run the following steps [=in parallel=]:
             <ol>
               <li>
-                [=Get the current permission state=] of <a>"captured-surface-control"</a>. If the
-                result is NOT {{PermissionState/"granted"}}, abort these steps.
+                If the [=relevant global object=]'s [=navigable=]'s [=top-level traversable=] does
+                NOT have
+                <a data-cite="!HTML/#tlbc-system-focus">system focus</a>, abort these steps.
               </li>
               <li>
-                If <var>event</var>.{{Event/isTrusted}} is <code>false</code>, abort these steps.
+                [=Request permission to use=] a {{PermissionDescriptor}} with its
+                {{PermissionDescriptor/name}} member set to
+                <code>"captured-surface-control"</code>. If the result of the request is
+                {{PermissionState/"denied"}}, abort these steps.
               </li>
+              <li>If |event|.{{Event/isTrusted}} is <code>false</code>, abort these steps.</li>
               <li>
-                Let [<var>scaledX</var>, <var>scaledY</var>] be the result of the [=scale element
-                coordinates algorithm=] on [<var>event</var>.{{MouseEvent/offsetX}},
-                <var>event</var>.{{MouseEvent/offsetY}}] and
+                Let [|scaledX|, |scaledY|] be the result of the [=scale element coordinates
+                algorithm=] on [|event|.{{MouseEvent/offsetX}}, |event|.{{MouseEvent/offsetY}}] and
                 [=this=].{{CaptureController/[[CaptureWheelElement]]}}.
               </li>
               <li>
                 [=Fire an event=] named `"wheel"` using {{WheelEvent}} with the {{MouseEvent/x}}
-                attribute initialized to <var>scaledX</var>, the {{MouseEvent/y}} attribute
-                initialized to <var>scaledY</var>, the {{WheelEvent/deltaX}} attribute initialized
-                to <var>event</var>.{{WheelEvent/deltaX}} and the {{WheelEvent/deltaY}} attribute
-                initialized to <var>event</var>.{{WheelEvent/deltaY}}, at <var>controller</var>.<a
+                attribute initialized to |scaledX|, the {{MouseEvent/y}} attribute initialized to
+                |scaledY|, the {{WheelEvent/deltaX}} attribute initialized to
+                |event|.{{WheelEvent/deltaX}} and the {{WheelEvent/deltaY}} attribute initialized to
+                |event|.{{WheelEvent/deltaY}}, at |controller|.<a
                   data-cite="!screen-capture/#dfn-source"
                   >[[\Source]]</a
                 >'s viewport.
@@ -529,51 +504,46 @@
       <section>
         <h2>Subroutine: Scale element coordinates</h2>
         <p>
-          The <dfn>scale element coordinates algorithm</dfn> takes {{double}} coordinates
-          [<var>x</var>, <var>y</var>] and a {{CaptureController}} <var>controller</var>, and run
-          the following steps:
+          The <dfn>scale element coordinates algorithm</dfn> takes {{double}} coordinates [|x|, |y|]
+          and a {{CaptureController}} |controller|, and run the following steps:
         </p>
         <ol>
           <li>
-            Let <var>scaleFactorX</var> be
+            Let |scaleFactorX| be
             <code
-              >(<var>x</var> /
-              <var>controller</var
-              >.{{CaptureController/[[CaptureWheelElement]]}}.{{Element/getBoundingClientRect()}}.{{DOMRect/width}})</code
+              >(|x| /
+              |controller|.{{CaptureController/[[CaptureWheelElement]]}}.{{Element/getBoundingClientRect()}}.{{DOMRect/width}})</code
             >.
           </li>
           <li>
-            Let <var>scaleFactorX</var> be
-            <code
-              >(<var>x</var> /
-              <var>controller</var
-              >.{{CaptureController/[[CaptureWheelElement]]}}.{{Element/getBoundingClientRect()}}.{{DOMRect/height}})</code
+            Let |scaleFactorX| be
+            <code>
+              (|x| /
+              |controller|.{{CaptureController/[[CaptureWheelElement]]}}.{{Element/getBoundingClientRect()}}.{{DOMRect/height}}) </code
             >.
           </li>
           <li>
-            Let <var>surfaceWidth</var> be <var>controller</var>.<a
-              data-cite="!screen-capture/#dfn-source"
+            Let |surfaceWidth| be |controller|.<a data-cite="!screen-capture/#dfn-source"
               >[[\Source]]</a
             >'s viewport's width.
           </li>
           <li>
-            Let <var>surfaceHeight</var> be <var>controller</var>.<a
-              data-cite="!screen-capture/#dfn-source"
+            Let |surfaceHeight| be |controller|.<a data-cite="!screen-capture/#dfn-source"
               >[[\Source]]</a
             >'s viewport's height.
           </li>
           <li>
-            Let <var>scaledX</var> be
-            <code>(<var>scaleFactorX</var> * <var>surfaceWidth</var>)</code>.
+            Let |scaledX| be
+            <code>(|scaleFactorX| * |surfaceWidth|)</code>.
           </li>
           <li>
-            Let <var>scaledY</var> be
-            <code>(<var>scaleFactorY</var> * <var>surfaceHeight</var>)</code>.
+            Let |scaledY| be
+            <code>(|scaleFactorY| * |surfaceHeight|)</code>.
           </li>
-          <li>Return [<var>scaledX</var>, <var>scaledY</var>].</li>
+          <li>Return [|scaledX|, |scaledY|].</li>
         </ol>
         <div class="note">
-          <p>This subroutine assumes that <var>controller</var> is [=actively capturing=].</p>
+          <p>This subroutine assumes that |controller| is [=actively capturing=].</p>
         </div>
       </section>
     </section>
