@@ -220,6 +220,39 @@
                 [=reject|rejected=] with a {{DOMException}} object whose {{DOMException/name}}
                 attribute has the value {{NotSupportedError}}.
               </li>
+              <li>
+                <p>
+                  Ensure that the code is running from within the context of an event handler which
+                  was triggered by the browser agent firing a trusted event, triggered by the user
+                  interacting with the user agent. To do so, run the following steps:
+                </p>
+                <ol>
+                  <li>Let |currentEvent:Event| be {{Window}}.{{Window/event}}.</li>
+                  <li>
+                    If |currentEvent| is {{undefined}}, return a promise [=reject|rejected=] with a
+                    {{DOMException}} object whose {{DOMException/name}} attribute has the value
+                    {{InvalidStateError}}.
+                  </li>
+                  <li>
+                    If |currentEvent|.{{Event/isTrusted}} is <code>false</code>, return a promise
+                    [=reject|rejected=] with a {{DOMException}} object whose {{DOMException/name}}
+                    attribute has the value {{InvalidStateError}}.
+                  </li>
+                  <li>Let |permittedEventTypes| be <code>['change', 'click', 'input']</code>.</li>
+                  <li>
+                    If |currentEvent|.{{Event/type}} is not in |permittedEventTypes|, return a
+                    promise [=reject|rejected=] with a {{DOMException}} object whose
+                    {{DOMException/name}} attribute has the value {{InvalidStateError}}.
+                    <div class="note">
+                      <p>
+                        It follows from these steps that {{CaptureController/setZoomLevel()}} is
+                        only callable with [=transient activation=], because |permittedEventTypes|
+                        only contains event types that confer this activation.
+                      </p>
+                    </div>
+                  </li>
+                </ol>
+              </li>
               <li>Let |targetZoomLevel| be the method's first argument.</li>
               <li>
                 If |targetZoomLevel| is not included in the user agent's set of [=supported zoom
