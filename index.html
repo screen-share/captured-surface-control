@@ -245,6 +245,12 @@
                         only callable with [=transient activation=], because |permittedEventTypes|
                         only contains event types that confer this activation.
                       </p>
+                      <p>
+                        In fact, our API shape implies a stronger guarantee - whereas [=transient
+                        activation=] persists for several seconds after the user action, the API
+                        shape here limits {{CaptureController/setZoomLevel()}} to being called
+                        immediately following the user's action.
+                      </p>
                     </div>
                   </li>
                 </ol>
@@ -571,6 +577,21 @@
         <div class="note">
           <p>This subroutine assumes that |controller| is [=actively capturing=].</p>
         </div>
+      </section>
+    </section>
+    <section>
+      <h2>Privacy and Security Considerations</h2>
+      <section>
+        <h3></h3>
+        <h3>Limiting setZoomLevel() to specific element types</h3>
+        <p>
+          {{CaptureController/setZoomLevel()}} is only callable from event handlers of specific
+          event types. We have considered also limiting {{CaptureController/setZoomLevel()}} by the
+          type of the <a data-cite="DOM/#dom-event-target">event target</a>. We decided that this
+          was unnecessary, because the set of |permittedEventTypes|, which currently only consists
+          of <code>'click'</code> and <code>'input'</code>, inherently limits which types of user
+          interaction could result in a valid call to {{CaptureController/setZoomLevel()}}.
+        </p>
       </section>
     </section>
     <section id="conformance"></section>
