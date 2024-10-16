@@ -365,10 +365,18 @@
                   whose {{DOMException/name}} is {{NotAllowedError}} and abort these steps.
                 </li>
                 <li>
-                  If [=this=].{{CaptureController/[[CaptureWheelElement]]}} is not
-                  <code>null</code>, [=remove an event listener=] with
-                  [=this=].{{CaptureController/[[CaptureWheelElement]]}} as |eventTarget| and
-                  [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as |listener|.
+                  <p>
+                    If [=this=].{{CaptureController/[[CaptureWheelElement]]}} is not
+                    <code>null</code>, [=remove an event listener=] with:
+                  </p>
+                  <ul>
+                    <li>
+                      [=this=].{{CaptureController/[[CaptureWheelElement]]}} as |eventTarget|.
+                    </li>
+                    <li>
+                      [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as |listener|.
+                    </li>
+                  </ul>
                 </li>
                 <li>Set [=this=].{{CaptureController/[[CaptureWheelElement]]}} to |element|.</li>
                 <li>
@@ -395,9 +403,15 @@
                   </dl>
                 </li>
                 <li>
-                  [=Add an event listener=] with
-                  [=this=].{{CaptureController/[[CaptureWheelElement]]}} as |eventTarget| and
-                  [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as |listener|.
+                  <p>[=Add an event listener=] with:</p>
+                  <ul>
+                    <li>
+                      [=this=].{{CaptureController/[[CaptureWheelElement]]}} as |eventTarget|.
+                    </li>
+                    <li>
+                      [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as |listener|.
+                    </li>
+                  </ul>
                 </li>
                 <li>[=Resolve=] |P|.</li>
               </ol>
