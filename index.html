@@ -234,7 +234,7 @@
                     [=reject|rejected=] with a {{DOMException}} object whose {{DOMException/name}}
                     attribute has the value {{InvalidStateError}}.
                   </li>
-                  <li>Let |permittedEventTypes| be <code>['change', 'click', 'input']</code>.</li>
+                  <li>Let |permittedEventTypes| be <code>['click', 'input']</code>.</li>
                   <li>
                     If |currentEvent|.{{Event/type}} is not in |permittedEventTypes|, return a
                     promise [=reject|rejected=] with a {{DOMException}} object whose
