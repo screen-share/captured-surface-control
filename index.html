@@ -255,7 +255,8 @@
                         It follows from these steps that {{CaptureController/setZoomLevel()}} is
                         only callable with [=transient activation=], because
                         <a>permitted event types for setZoomLevel</a>
-                        only contains event types that confer this activation.
+                        only contains <a data-cite="DOM#dom-event-type">event types</a> that confer
+                        this activation.
                       </p>
                       <p>
                         In fact, our API shape implies a stronger guarantee - whereas [=transient
@@ -593,38 +594,35 @@
     </section>
     <section>
       <h2>Privacy and Security Considerations</h2>
+      <p>
+        The API surfaces introduced in this specification allow a capturing application limited
+        control over a captured application. These APIs allow the capturing application to gain
+        access to additional pixels in the captured application. This specification employs multiple
+        means to ensure that new capabilities are used in accordance with the user's intentions.
+        Among these means:
+      </p>
+      <ul>
+        <li>
+          All new capabilities introduced here are implicitly gated by the prior mitigations which
+          were employed to render screen-sharing safe.
+        </li>
+        <li>A new {{PermissionsPolicy}} called <a>"captured-surface-control"</a> is used.</li>
+        <li>
+          {{CaptureController/captureWheel()}} is designed such that only the user's scrolling over
+          an {{Element}} can trigger scrolling in the captured application. This API shape ensures
+          that the capturing application can only [=forward wheel event algorithm|forward wheel
+          events=] to the captured application at the time when the user agent dispatches the
+          trusted wheel event on the capturing application itself.
+        </li>
+        <li>
+          Setting the zoom level is gated by a requirement that is even more stringent than
+          [=transient activation=]. Whereas [=transient activation=] could be used several seconds
+          after the interaction, we limit zoom-setting to the exact time when the user agent
+          dispatches the event associated with that interaction.
+        </li>
+      </ul>
       <section>
-        <h3>Access to additional pixels</h3>
-        <p>
-          The API surfaces introduced in this specification allow a capturing application limited
-          control over a captured application. These APIs allow the capturing application to gain
-          access to additional pixels in the captured application. This specification employs
-          multiple means to ensure that new capabilities are used in accordance with the user's
-          intentions. Among these means:
-        </p>
-        <ul>
-          <li>
-            All new capabilities introduced here are implicitly gated by the prior mitigations which
-            were employed to render screen-sharing safe.
-          </li>
-          <li>A new {{PermissionsPolicy}} called <a>"captured-surface-control"</a> is used.</li>
-          <li>
-            {{CaptureController/captureWheel()}} is designed such that only the user's scrolling
-            over an {{Element}} can trigger scrolling in the captured application. Note that this
-            requirement is more stringent than [=transient activation=]. (It bears mentioning that
-            scrolling itself does not confer [=transient activation=]; the chosen API shape has the
-            nice property of bypassing this limitation.)
-          </li>
-          <li>
-            Setting the zoom level is gated by a requirement that is even more stringent than
-            [=transient activation=]. Whereas [=transient activation=] could be used several seconds
-            after the interaction, we limit zoom-setting to the exact time when the user agent
-            dispatches the event associated with that interaction.
-          </li>
-        </ul>
-      </section>
-      <section>
-        <h3>Limiting setZoomLevel() to specific interactions</h3>
+        <h3>Zoom-setting: Limitation to specific interactions</h3>
         <p>
           {{CaptureController/setZoomLevel()}} is only callable from event handlers of specific
           <a data-cite="DOM#dom-event-type">event types</a> - the
@@ -632,6 +630,33 @@
           user agent, triggered by user interaction. We intentionally exclude from this set such
           events as <a data-cite="uievents#mousemove">"mousemove"</a>, which users are liable to
           trigger inadvertently.
+        </p>
+      </section>
+      <section>
+        <h3>Scrolling: Limitation to specific interactions</h3>
+        <p>
+          The shape of {{CaptureController/captureWheel()}} is intentionally chosen to limit the
+          capturing application's control. The application designates a specific element which, when
+          the user scrolls over it, the corresponding wheel events are forwarded to the captured
+          application. This is in intentional contrast to a prior API shape,
+          <code>sendWheel()</code>, whereby the capturing application could instigate scrolling of
+          the captured application at any time.
+        </p>
+      </section>
+      <section>
+        <h3>Limiting element types</h3>
+        <p>
+          We do NOT limit the type of {{Element}} for which either
+          {{CaptureController/setZoomLevel()}} or {{CaptureController/captureWheel()}} work. Such a
+          limitation would accomplish nothing, because malicious applications could always overlay
+          transparent permitted {{Element}} types on top of visible non-permitted {{Element}}s,
+          thereby bypassing this restriction.
+        </p>
+        <p>
+          We deem the limitation of interaction types to be sufficient. This is accomplished by
+          {{CaptureController/captureWheel()}} through its shape, and by
+          {{CaptureController/setZoomLevel()}} through its gating on
+          <a data-cite="DOM#dom-event-type">event types</a>.
         </p>
       </section>
     </section>
