@@ -11,8 +11,8 @@
     <section id="abstract">
       <p>
         Consider a Web application |capturer| which has used {{MediaDevices/getDisplayMedia()}} to
-        start capturing another [=display surface=] we call |capturee|. This specification
-        introduces a set of APIs that allow |capturer| the following new capabilities:
+        start capturing another [=display surface=], |capturee|. This specification introduces a set
+        of APIs that allow |capturer| the following new capabilities:
       </p>
       <ul>
         <li>Read and write |capturee|'s [=zoom level=].</li>
@@ -617,8 +617,8 @@
         <li>
           Setting the zoom level is gated by a requirement that is even more stringent than
           [=transient activation=]. Whereas [=transient activation=] could be used several seconds
-          after the interaction, we limit zoom-setting to the exact time when the user agent
-          dispatches the event associated with that interaction.
+          after the interaction, this specification limits zoom-setting to the exact time when the
+          user agent dispatches the event associated with that interaction.
         </li>
       </ul>
       <section>
@@ -627,9 +627,9 @@
           {{CaptureController/setZoomLevel()}} is only callable from event handlers of specific
           <a data-cite="DOM#dom-event-type">event types</a> - the
           <a>permitted event types for setZoomLevel</a>. These are events dispatched directly by the
-          user agent, triggered by user interaction. We intentionally exclude from this set such
-          events as <a data-cite="uievents#mousemove">"mousemove"</a>, which users are liable to
-          trigger inadvertently.
+          user agent, triggered by user interaction. This specification intentionally excludes from
+          this set such events as <a data-cite="uievents#mousemove">"mousemove"</a>, which users are
+          liable to trigger inadvertently.
         </p>
       </section>
       <section>
@@ -646,14 +646,14 @@
       <section>
         <h3>Limiting element types</h3>
         <p>
-          We do NOT limit the type of {{Element}} for which either
+          This specification does not limit the type of {{Element}} for which either
           {{CaptureController/setZoomLevel()}} or {{CaptureController/captureWheel()}} work. Such a
           limitation would accomplish nothing, because malicious applications could always overlay
           transparent permitted {{Element}} types on top of visible non-permitted {{Element}}s,
           thereby bypassing this restriction.
         </p>
         <p>
-          We deem the limitation of interaction types to be sufficient. This is accomplished by
+          The limitation of interaction types is sufficient. This is accomplished by
           {{CaptureController/captureWheel()}} through its shape, and by
           {{CaptureController/setZoomLevel()}} through its gating on
           <a data-cite="DOM#dom-event-type">event types</a>.
