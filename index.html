@@ -612,7 +612,7 @@
           an {{Element}} can trigger scrolling in the captured application. This API shape ensures
           that the capturing application can only [=forward wheel event algorithm|forward wheel
           events=] to the captured application at the time when the user agent dispatches the
-          trusted scroll event on the capturing application itself.
+          trusted wheel event on the capturing application itself.
         </li>
         <li>
           Setting the zoom level is gated by a requirement that is even more stringent than
@@ -622,7 +622,7 @@
         </li>
       </ul>
       <section>
-        <h3>Limiting setZoomLevel() to specific interactions</h3>
+        <h3>Zoom-setting: Limitation to specific interactions</h3>
         <p>
           {{CaptureController/setZoomLevel()}} is only callable from event handlers of specific
           <a data-cite="DOM#dom-event-type">event types</a> - the
@@ -630,6 +630,17 @@
           user agent, triggered by user interaction. We intentionally exclude from this set such
           events as <a data-cite="uievents#mousemove">"mousemove"</a>, which users are liable to
           trigger inadvertently.
+        </p>
+      </section>
+      <section>
+        <h3>Scrolling: Limitation to specific interactions</h3>
+        <p>
+          The shape of {{CaptureController/captureWheel()}} is intentionally chosen to limit the
+          capturing application's control. The application designates a specific element which, when
+          the user scrolls over it, the corresponding wheel events are forwarded to the captured
+          application. This is in intentional contrast to a prior API shape,
+          <code>sendWheel()</code>, whereby the capturing application could instigate scrolling of
+          the captured application at any time.
         </p>
       </section>
       <section>
