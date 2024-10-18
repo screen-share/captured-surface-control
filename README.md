@@ -15,7 +15,7 @@ All these applications suffer from the same drawback - if the user wishes to int
 4. Local users who are presenting cannot delegate some limited control to remote participants. This leads to the all too familiar scenario, where remote users must beg the local user to change the slide or scroll a bit up/down.
 
 ## Terminology
-A **"capturing application"** is an application which has called [getDisplayMedia()](https://www.w3.org/TR/screen-capture/#dom-mediadevices-getdisplaymedia), leading the browser to present a "media-picker" dialog to the user, from which the user will have chosen to capture a tab, a window or a screen. The surface selected by the user is the **"captured surface"**. If that surface was a tab, we call the Web application currently loaded in that tab the **"captured application"**. If the user's chosen surface surface is a window, we designate the associated native application as the **"captured application"**.
+A **"capturing application"** is an application which has called [getDisplayMedia()](https://www.w3.org/TR/screen-capture/#dom-mediadevices-getdisplaymedia), leading the browser to present a "media-picker" dialog to the user, from which the user will have chosen to capture a tab, a window or a screen. The surface selected by the user is the **"captured surface"**. If that surface was a tab, we call the Web application currently loaded in that tab the **"captured application"**. If the user's chosen surface is a window, we designate the associated native application as the **"captured application"**.
 
 ## General API shape
 
