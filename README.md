@@ -49,7 +49,7 @@ With most browsers' interpretation of [Permissions Policy](https://www.w3.org/TR
 Before displaying a permission prompt to the user, the app must solicit a user gesture. If the app wants to show zoom-in/out buttons ahead of time, then the user gesture is a given. But if the app wants to first inform the user about these new features, and provide clearer context about the ensuing permission prompt, then the app could include an onboarding experience that features a "start" button of some sort, after which it will invoke a write-access API in a no-op manner, producing the prompt but not causing any action thereafer. An example is:
 
 <p align="center">
-  <img src="images/explainer/onboarding_mock.png">
+  <img src="images/explainer/onboarding_mock_full_context.png">
 </p>
 
 Code to support this could look as follows:
