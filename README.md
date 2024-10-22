@@ -4,7 +4,7 @@
 
 We introduce a new Web API that allows Web applications to:
 
-1. Forward wheel events to a captured tab. (In the future - potentially also a window.)
+1. Forward wheel events to a captured tab.
 2. Read/write the zoom level of a captured tab.
 
 ## Motivation
@@ -218,7 +218,7 @@ Discussed [below](#transient-activation).
 
 #### Side effects
 
-Wheel events might have effects other than scrolling the page. If we consider some modern dating applications, we note that "swiping right" could have far-reaching consequences, and might even culminate in matrimony. However, the author of this document argues that the permission prompt is sufficient here, as it was for other Web Platform capabilities.
+Gestures like wheel and pinch might have effects other than scrolling the page. If we consider some modern dating applications, we note that "swiping right" could have far-reaching consequences, and might even culminate in matrimony. However, the author of this document argues that the permission prompt is sufficient here, as it was for other Web Platform capabilities.
 
 #### Scrolling third-party iframes when self-capturing
 
@@ -253,6 +253,16 @@ While executing the aforementioned attack, either avoid presenting a preview-til
 It is arguable that the legitimate use case described above is risky. We argue that it’s up to the application to only deploy it according to the local user’s genuine intentions.
 
 **However**, user agents need to ensure that while a user is actively interacting with a captured tab, the capturing tab would not be able to concurrently zoom and scroll the captured tab, which would be confusing and frustrating for the user even in non-malicious settings. Due to the complexity of specifying and implementing this, Chrome's initial implementation of this API will only allow the capturing application to scroll/zoom while the capturing application is focused. The first draft of the spec will pose this as a requirement, but this may be changed at a later time.
+
+## Potential future extensions
+
+### Extension from tab-capture to window-capture
+At the moment, the API only supports control of captured tabs. In the future, the API might be extended to allow control of windows.
+
+### Extension to additional gestures
+At the moment, the API allows forwarding of wheel events. In the future, other gestures might be considered, such as pinch.
+
+Note that forwarding of such events as `"click"` is NOT foreseen.
 
 ## Common questions
 
