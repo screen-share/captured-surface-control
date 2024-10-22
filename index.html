@@ -407,53 +407,41 @@
                   whose {{DOMException/name}} is {{NotAllowedError}} and abort these steps.
                 </li>
                 <li>
-                  <p>
-                    If [=this=].{{CaptureController/[[CaptureWheelElement]]}} is not
-                    <code>null</code>, [=remove an event listener=] with:
-                  </p>
-                  <ul>
-                    <li>
-                      [=this=].{{CaptureController/[[CaptureWheelElement]]}} as |eventTarget|.
-                    </li>
-                    <li>
-                      [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as |listener|.
-                    </li>
-                  </ul>
+                  If [=this=].{{CaptureController/[[CaptureWheelElement]]}} is not
+                  <code>null</code>, [=remove an event listener=] with
+                  [=this=].{{CaptureController/[[CaptureWheelElement]]}} as |eventTarget| and
+                  [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as |listener|.
                 </li>
-                <li>Set [=this=].{{CaptureController/[[CaptureWheelElement]]}} to |element|.</li>
                 <li>
                   Set [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} to
                   <code>null</code>.
                 </li>
+                <li>Set [=this=].{{CaptureController/[[CaptureWheelElement]]}} to |element|.</li>
                 <li>
-                  If [=this=].{{CaptureController/[[CaptureWheelElement]]}} is <code>null</code>,
-                  [=resolve=] |P| and abort these steps.
-                </li>
-                <li>
-                  Set [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} to an [=event
-                  listener=] defined as follows:
-                  <dl>
-                    <dt>type</dt>
-                    <dd><code>wheel</code></dd>
-                    <dt>[=event listener/callback=]</dt>
-                    <dd>
-                      The result of creating a new Web IDL {{EventListener}} instance representing a
-                      reference to a function of one argument of type {{Event}} |event|. This
-                      function executes the [=forward wheel event algorithm=] given [=this=] and
-                      |event|.
-                    </dd>
-                  </dl>
-                </li>
-                <li>
-                  <p>[=Add an event listener=] with:</p>
-                  <ul>
+                  If [=this=].{{CaptureController/[[CaptureWheelElement]]}} is not
+                  <code>null</code>:
+                  <ol>
                     <li>
-                      [=this=].{{CaptureController/[[CaptureWheelElement]]}} as |eventTarget|.
+                      Set [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} to an [=event
+                      listener=] defined as follows:
+                      <dl>
+                        <dt>type</dt>
+                        <dd><code>wheel</code></dd>
+                        <dt>[=event listener/callback=]</dt>
+                        <dd>
+                          The result of creating a new Web IDL {{EventListener}} instance
+                          representing a reference to a function of one argument of type {{Event}}
+                          |event|. This function executes the [=forward wheel event algorithm=]
+                          given [=this=] and |event|.
+                        </dd>
+                      </dl>
                     </li>
                     <li>
+                      [=Add an event listener=] with
+                      [=this=].{{CaptureController/[[CaptureWheelElement]]}} as |eventTarget| and
                       [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as |listener|.
                     </li>
-                  </ul>
+                  </ol>
                 </li>
                 <li>[=Resolve=] |P|.</li>
               </ol>
