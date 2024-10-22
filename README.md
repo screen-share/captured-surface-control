@@ -266,17 +266,20 @@ Note that forwarding of such events as `"click"` is NOT foreseen.
 
 ## Alternatives considered
 
-### Communication with the captured application
+### Rejected alternative: Communication with the captured application
 We have considered the alternative of providing a mechanism for the capturing application to communicate with the captured application, **asking** it to scroll or change its zoom level. This alternative was deemed wholly insufficient - solutions that require opt-in by the captured application, would fail to work for the majority of capturer/capturee combinations due to absent opt-in, thereby failing to solve the problem.
 
 Note that there are other good reasons to support communication between the capturing and captured application, and that both **structured communication** (e.g. "next slide" and "previous slide") as well as **unstructured communication** (e.g. `postMessage(anything)`) has its merits. However, that is a different solution, useful for a different set of problems.
 
-### Zoom-control through browser-level UX
+### Rejected alternative: Zoom-control through browser-level UX
 We have considered leaving it up to the user agent to present zoom-controls controls to the user. However, this alternative approach would not solve the problem sufficiently.
 - Capturing applications need zoom-controls to be discoverable, which often means placing them inside of the viewport, in a position that is congruent with the rest of the application-level controls. For some capturing applications, this means overlaying zoom-controls over the video preview tile; for other capturing applications, this means placing them alongside pre-existing app-level controls.
 - Applications need to customize the look and feel of controls to fit together with the rest of the application.
 
 It bears mentioning that, while we provide an API for app-level control of zoom, this does *not* stop user agents from providing such controls as well.
+
+### Rejected alternative: Forwarding of gestures based on browser heuristics
+Heuristics are imperfect - they often fail to trigger when desired, or trigger when not desired. Browser vendors are free to try their hand at developing such heuristics, but we believe it is essential that the Web platform include a mechanism for Web applications to explicitly trigger the functionality introduces by Captured Surface Control. (Note that this is not mutually-exclusive with heuristics.)
 
 ## Common questions
 
