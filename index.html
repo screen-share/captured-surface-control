@@ -59,12 +59,6 @@
           non-comprehensive list of examples of such controls includes - embedded chat applications,
           emoji reactions, "knock-ins" by users asking to join the call, and multimedia controls.
         </li>
-        <!-- TODO: Reintroduce the following in a separate section focusing on potential future scope:
-        <li>
-          Local users who are presenting cannot delegate some limited control to remote
-          participants. This leads to the all too familiar scenario, where remote users must beg the
-          local user to change the slide or scroll a bit up/down.
-        </li> -->
       </ol>
       <p>
         It bears mentioning that
@@ -89,7 +83,8 @@
         <p>
           The API surfaces introduced by this specification can be categorized as either read-access
           or write-access. Note that only the write-access APIs ({{CaptureController/setZoomLevel}}
-          and {{CaptureController/captureWheel}}) are gated by the <a>"captured-surface-control"</a>
+          and {{CaptureController/forwardGestures}}) are gated by the
+          <a>"captured-surface-control"</a>
           permissions policy.
         </p>
       </div>
@@ -323,13 +318,43 @@
       </section>
     </section>
 
-    <section id="scrolling">
-      <h1>Scroll</h1>
-      <h2>Scrolling APIs</h2>
+    <section>
+      <h1>Gesture Forwarding</h1>
+      <p>
+        We introuce APIs to allow forwarding of specific gestures from the capturing application to
+        the captured application. The set of gestures comprises those gestures that are considered
+        safe to forward, subject to the <a>"captured-surface-control"</a> {{PermissionsPolicy}}.
+      </p>
+      <div class="note">
+        <p>
+          Future support for such gestures as
+          <a data-cite="uievents#event-type-click">"click"</a> is NOT envisioned.
+        </p>
+      </div>
+      <h2><dfn>ForwardedGestures</dfn></h2>
+      <pre class="idl">
+        dictionary ForwardedGestures {
+          boolean wheel = false;
+        };
+      </pre>
+      <dl data-link-for="ForwardedGestures" data-dfn-for="ForwardedGestures" class="dictionary">
+        <dt><dfn>wheel</dfn></dt>
+        <dd>
+          <p>
+            Whether the application calling {{CaptureController/forwardGestures()}} wants
+            <a href="https://w3c.github.io/uievents/#idl-wheelevent">wheel events</a> to be
+            forwarded from the indicated element to the captured surface.
+          </p>
+        </dd>
+      </dl>
+
+      <h2>Gesture-forwarding APIs</h2>
       <pre class="idl">
         partial interface CaptureController {
           constructor();
-          Promise&lt;undefined&gt; captureWheel(HTMLElement element);
+          Promise&lt;undefined&gt; forwardGestures(
+              HTMLElement element,
+              optional ForwardedGestures gestures = {});
         };
       </pre>
       <dl data-link-for="CaptureController" data-dfn-for="CaptureController" class="methods">
@@ -349,22 +374,18 @@
             </thead>
             <tbody>
               <tr>
-                <td><dfn>[[\CaptureWheelElement]]</dfn></td>
-                <td><code>null</code></td>
-              </tr>
-              <tr>
-                <td><dfn>[[\CaptureWheelEventListener]]</dfn></td>
-                <td><code>null</code></td>
+                <td><dfn>[[\GestureForwardingElementsMap]]</dfn></td>
+                <td>Empty [=ordered map | map=]</td>
               </tr>
             </tbody>
           </table>
         </dd>
-        <dt><dfn>captureWheel()</dfn></dt>
+        <dt><dfn>forwardGestures()</dfn></dt>
         <dd>
           <p>
-            This method allows applications to automatically forward
-            <a href="https://w3c.github.io/uievents/#idl-wheelevent">wheel events</a>
-            from an {{HTMLElement}} to the viewport of a captured [=display surface=].
+            This method allows applications to automatically forward gesture events (e.g.
+            <a href="https://w3c.github.io/uievents/#idl-wheelevent">wheel events</a>) from an
+            {{HTMLElement}} to the viewport of a captured [=display surface=].
           </p>
           <p>When invoked, the user agent MUST run the following steps:</p>
           <ol>
@@ -384,6 +405,7 @@
               attribute has the value {{NotSupportedError}}.
             </li>
             <li>Let |element| be the method's first argument.</li>
+            <li>Let |gestures| be the method's second argument.</li>
             <li>Let |P| be a new {{Promise}}.</li>
             <li>
               Run the following steps [=in parallel=]:
@@ -398,10 +420,10 @@
                     <p>
                       This step ensures that on the one hand, permission prompts are not be shown
                       without [=transient activation=], while on the one hand, if the permission is
-                      already {{PermissionState/"granted"}}, {{CaptureController/captureWheel()}}
+                      already {{PermissionState/"granted"}}, {{CaptureController/forwardGestures()}}
                       may be called immediately after {{MediaDevices/getDisplayMedia()}} resolves,
                       even if the [=transient activation=] that permitted the call to
-                      {{CaptureController/captureWheel()}} has since expired.
+                      {{CaptureController/forwardGestures()}} has since expired.
                     </p>
                   </div>
                 </li>
@@ -413,31 +435,26 @@
                   whose {{DOMException/name}} is {{NotAllowedError}} and abort these steps.
                 </li>
                 <li>
-                  <p>
-                    If [=this=].{{CaptureController/[[CaptureWheelElement]]}} is not
-                    <code>null</code>, [=remove an event listener=] with:
-                  </p>
-                  <ul>
-                    <li>
-                      [=this=].{{CaptureController/[[CaptureWheelElement]]}} as |eventTarget|.
-                    </li>
-                    <li>
-                      [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as |listener|.
-                    </li>
-                  </ul>
+                  Let |map| be [=this=].{{CaptureController/[[GestureForwardingElementsMap]]}}.
                 </li>
-                <li>Set [=this=].{{CaptureController/[[CaptureWheelElement]]}} to |element|.</li>
                 <li>
-                  Set [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} to
+                  If |map|[|element|] exists, [=remove an event listener=] with |element| as
+                  |eventTarget| and |map|[|element|] as |listener|.
+                </li>
+                <li>
+                  Set [=this=].{{CaptureController/[[GestureForwardingElement]]}} to |element|.
+                </li>
+                <li>
+                  Set [=this=].{{CaptureController/[[GestureForwardingEventListener]]}} to
                   <code>null</code>.
                 </li>
                 <li>
-                  If [=this=].{{CaptureController/[[CaptureWheelElement]]}} is <code>null</code>,
-                  [=resolve=] |P| and abort these steps.
+                  If [=this=].{{CaptureController/[[GestureForwardingElement]]}} is
+                  <code>null</code>, [=resolve=] |P| and abort these steps.
                 </li>
                 <li>
-                  Set [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} to an [=event
-                  listener=] defined as follows:
+                  Set [=this=].{{CaptureController/[[GestureForwardingEventListener]]}} to an
+                  [=event listener=] defined as follows:
                   <dl>
                     <dt>type</dt>
                     <dd><code>wheel</code></dd>
@@ -454,10 +471,11 @@
                   <p>[=Add an event listener=] with:</p>
                   <ul>
                     <li>
-                      [=this=].{{CaptureController/[[CaptureWheelElement]]}} as |eventTarget|.
+                      [=this=].{{CaptureController/[[GestureForwardingElement]]}} as |eventTarget|.
                     </li>
                     <li>
-                      [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as |listener|.
+                      [=this=].{{CaptureController/[[GestureForwardingEventListener]]}} as
+                      |listener|.
                     </li>
                   </ul>
                 </li>
@@ -530,7 +548,7 @@
               <li>
                 Let [|scaledX|, |scaledY|] be the result of the [=scale element coordinates
                 algorithm=] on [|event|.{{MouseEvent/offsetX}}, |event|.{{MouseEvent/offsetY}}] and
-                [=this=].{{CaptureController/[[CaptureWheelElement]]}}.
+                [=this=].{{CaptureController/[[GestureForwardingElement]]}}.
               </li>
               <li>
                 [=Fire an event=] named `"wheel"` using {{WheelEvent}} with the {{MouseEvent/x}}
@@ -557,14 +575,14 @@
             Let |scaleFactorX| be
             <code
               >(|x| /
-              |controller|.{{CaptureController/[[CaptureWheelElement]]}}.{{Element/getBoundingClientRect()}}.{{DOMRect/width}})</code
+              |controller|.{{CaptureController/[[GestureForwardingElement]]}}.{{Element/getBoundingClientRect()}}.{{DOMRect/width}})</code
             >.
           </li>
           <li>
             Let |scaleFactorX| be
             <code
               >(|x| /
-              |controller|.{{CaptureController/[[CaptureWheelElement]]}}.{{Element/getBoundingClientRect()}}.{{DOMRect/height}})</code
+              |controller|.{{CaptureController/[[GestureForwardingElement]]}}.{{Element/getBoundingClientRect()}}.{{DOMRect/height}})</code
             >.
           </li>
           <li>
@@ -608,10 +626,10 @@
         </li>
         <li>A new {{PermissionsPolicy}} called <a>"captured-surface-control"</a> is used.</li>
         <li>
-          {{CaptureController/captureWheel()}} is designed such that only the user's scrolling over
-          an {{Element}} can trigger scrolling in the captured application. This API shape ensures
-          that the capturing application can only [=forward wheel event algorithm|forward wheel
-          events=] to the captured application at the time when the user agent dispatches the
+          {{CaptureController/forwardGestures()}} is designed such that only the user's scrolling
+          over an {{Element}} can trigger scrolling in the captured application. This API shape
+          ensures that the capturing application can only [=forward wheel event algorithm|forward
+          wheel events=] to the captured application at the time when the user agent dispatches the
           trusted wheel event on the capturing application itself.
         </li>
         <li>
@@ -635,7 +653,7 @@
       <section>
         <h3>Scrolling: Limitation to specific interactions</h3>
         <p>
-          The shape of {{CaptureController/captureWheel()}} is intentionally chosen to limit the
+          The shape of {{CaptureController/forwardGestures()}} is intentionally chosen to limit the
           capturing application's control. The application designates a specific element which, when
           the user scrolls over it, the corresponding wheel events are forwarded to the captured
           application. This is in intentional contrast to a prior API shape,
@@ -647,14 +665,14 @@
         <h3>Limiting element types</h3>
         <p>
           This specification does not limit the type of {{Element}} for which either
-          {{CaptureController/setZoomLevel()}} or {{CaptureController/captureWheel()}} work. Such a
-          limitation would accomplish nothing, because malicious applications could always overlay
+          {{CaptureController/setZoomLevel()}} or {{CaptureController/forwardGestures()}} work. Such
+          a limitation would accomplish nothing, because malicious applications could always overlay
           transparent permitted {{Element}} types on top of visible non-permitted {{Element}}s,
           thereby bypassing this restriction.
         </p>
         <p>
           The limitation of interaction types is sufficient. This is accomplished by
-          {{CaptureController/captureWheel()}} through its shape, and by
+          {{CaptureController/forwardGestures()}} through its shape, and by
           {{CaptureController/setZoomLevel()}} through its gating on
           <a data-cite="DOM#dom-event-type">event types</a>.
         </p>
