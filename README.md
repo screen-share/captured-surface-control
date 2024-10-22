@@ -57,7 +57,6 @@ Code to support this could look as follows:
 ```js
 document.getElementById("startButton").onclick = async () => {
   try {
-    // Trigger a permission prompt if necessary.
     const hasPermission = await navigator.permissions.query({
       name: "captured-surface-control",
     });
