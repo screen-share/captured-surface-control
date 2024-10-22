@@ -271,6 +271,12 @@ We have considered the alternative of providing a mechanism for the capturing ap
 
 Note that there are other good reasons to support communication between the capturing and captured application, and that both **structured communication** (e.g. "next slide" and "previous slide") as well as **unstructured communication** (e.g. `postMessage(anything)`) has its merits. However, that is a different solution, useful for a different set of problems.
 
+### Zoom-control through browser-level UX
+We have considered leaving it up to the user agent to present zoom-controls controls to the user. However, this alternative approach would not solve the problem sufficiently.
+- Capturing applications need zoom-controls to be discoverable, which often means placing them inside of the viewport, in a position that is congruent with the rest of the application-level controls. For some capturing applications, this means overlaying zoom-controls over the video preview tile; for other capturing applications, this means placing them alongside pre-existing app-level controls.
+- Applications need to customize the look and feel of controls to fit together with the rest of the application.
+
+It bears mentioning that, while we provide an API for app-level control of zoom, this does *not* stop user agents from providing such controls as well.
 
 ## Common questions
 
