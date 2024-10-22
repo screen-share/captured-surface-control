@@ -407,24 +407,16 @@
                   whose {{DOMException/name}} is {{NotAllowedError}} and abort these steps.
                 </li>
                 <li>
-                  <p>
-                    If [=this=].{{CaptureController/[[CaptureWheelElement]]}} is not
-                    <code>null</code>, [=remove an event listener=] with:
-                  </p>
-                  <ul>
-                    <li>
-                      [=this=].{{CaptureController/[[CaptureWheelElement]]}} as |eventTarget|.
-                    </li>
-                    <li>
-                      [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as |listener|.
-                    </li>
-                  </ul>
+                  If [=this=].{{CaptureController/[[CaptureWheelElement]]}} is not
+                  <code>null</code>, [=remove an event listener=] with
+                  [=this=].{{CaptureController/[[CaptureWheelElement]]}} as |eventTarget| and
+                  [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as |listener|.
                 </li>
-                <li>Set [=this=].{{CaptureController/[[CaptureWheelElement]]}} to |element|.</li>
                 <li>
                   Set [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} to
                   <code>null</code>.
                 </li>
+                <li>Set [=this=].{{CaptureController/[[CaptureWheelElement]]}} to |element|.</li>
                 <li>
                   If [=this=].{{CaptureController/[[CaptureWheelElement]]}} is not
                   <code>null</code>:
