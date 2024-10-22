@@ -264,6 +264,14 @@ At the moment, the API allows forwarding of wheel events. In the future, other g
 
 Note that forwarding of such events as `"click"` is NOT foreseen.
 
+## Alternatives considered
+
+### Communication with the captured application
+We have considered the alternative of providing a mechanism for the capturing application to communicate with the captured application, **asking** it to scroll or change its zoom level. This alternative was deemed wholly insufficient - solutions that require opt-in by the captured application, would fail to work for the majority of capturer/capturee combinations due to absent opt-in, thereby failing to solve the problem.
+
+Note that there are other good reasons to support communication between the capturing and captured application, and that both **structured communication** (e.g. "next slide" and "previous slide") as well as **unstructured communication** (e.g. `postMessage(anything)`) has its merits. However, that is a different solution, useful for a different set of problems.
+
+
 ## Common questions
 
 ### What about Picutre-in-Picture?
