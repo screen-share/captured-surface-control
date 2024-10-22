@@ -95,9 +95,11 @@ try {
 }
 ```
 
-It is possible to use `captureWheel()` with any type of element. This means that overlay some information over the video preview tile, like text indicating what it is, need not worry about the user experience breaking down if the user scrolls over that text; they can just overlay an invisible element over the combined video element and text, then forward wheel events from that canvas.
+It is possible to use `captureWheel()` with any type of element. This allows applications to forward gestures from elements other than the `HTMLVideoElement` itself. Thanks to this useful property of the API, applicationss can draw text, annotations and emoji-reactions over the video preview tile, and the experience will still work as the user expects.
 
-To stop the forwarding of wheel events, applications can invoke `captureWheel()` with `null` as input. Forwarding will stop if the capture-session ends for whatever reason.
+To stop the forwarding of wheel events, applications can invoke `captureWheel(null)`.
+
+Forwarding will also stop if the capture-session ends for whatever reason.
 
 ## Zoom controls
 
