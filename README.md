@@ -220,10 +220,6 @@ All write-access introduced by this spec, are limited to the time when the user 
 
 Gestures like wheel and pinch might have effects other than scrolling the page. If we consider some modern dating applications, we note that "swiping right" could have far-reaching consequences, and might even culminate in matrimony. However, the author of this document argues that the permission prompt is sufficient here, as it was for other Web Platform capabilities.
 
-#### Scrolling third-party iframes when self-capturing
-
-Applications that are capturing their own tab can load arbitrary third-party content in iframes and scroll it, thereby either gaining access to new content of their choosing, or producing arbitrary side effects. The mitigation of the permission prompt is still presented as sufficient here, as is the unlikelihood of third-party content only being sensitive after scrolling. If necessary, in the future, it is possible to also remove the ability to control the current tab.
-
 ## Potential future extensions
 
 ### Extension to additional gestures
