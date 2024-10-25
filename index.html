@@ -208,6 +208,11 @@
                 {{InvalidStateError}}.
               </li>
               <li>
+                If [=this=] [=is self-capturing=], return a promise [=reject|rejected=] with a
+                {{DOMException}} object whose {{DOMException/name}} attribute has the value
+                {{InvalidStateError}}.
+              </li>
+              <li>
                 Let |surfaceType| be [=this=].<a data-cite="!screen-capture/#dfn-displaysurfacetype"
                   >[[\DisplaySurfaceType]]</a
                 >.
@@ -364,6 +369,11 @@
               {{InvalidStateError}}.
             </li>
             <li>
+              If [=this=] [=is self-capturing=], return a promise [=reject|rejected=] with a
+              {{DOMException}} object whose {{DOMException/name}} attribute has the value
+              {{InvalidStateError}}.
+            </li>
+            <li>
               Let |surfaceType| be [=this=].<a data-cite="!screen-capture/#dfn-displaysurfacetype"
                 >[[\DisplaySurfaceType]]</a
               >.
@@ -470,6 +480,22 @@
         </ol>
       </section>
       <section>
+        <h2>Subroutine: Is self-capturing</h2>
+        <p>
+          To determine if a {{CaptureController}} |controller| is
+          <dfn>is self-capturing</dfn>, run the following steps:
+        </p>
+        <ol>
+          <li>If |controller| is not [=actively capturing=], return <code>false</code>.</li>
+          <li>
+            If |controller|.<a data-cite="!screen-capture/#dfn-source">[[\Source]]</a> is a
+            [=display surface=] of type [=display surface/browser=], and represents the [=relevant
+            global object=]'s [=associated `Document`=], return <code>true</code>.
+          </li>
+          <li>Return <code>false</code>.</li>
+        </ol>
+      </section>
+      <section>
         <h2>Subroutine: Supported display surface type</h2>
         <p>
           To determine if a [=display surface=] |surfaceType| is
@@ -491,6 +517,7 @@
         </p>
         <ol>
           <li>If |controller| is not [=actively capturing=], abort these steps.</li>
+          <li>If [=this=] [=is self-capturing=], abort these steps.</li>
           <li>
             Let |surfaceType| be |controller|.<a data-cite="!screen-capture/#dfn-displaysurfacetype"
               >[[\DisplaySurfaceType]]</a
