@@ -46,7 +46,11 @@ No.
 
 ### 2.11. Do features in this specification allow an origin some measure of control over a user agent’s native UI?
 
-Yes, in a limited way - the zoom-level of captured tabs can be changed. Naturally, this is reflected in the user agent's native UX that informs the user of a tab's zoom-level.
+Yes, in a limited way - the zoom-level of captured tabs can be changed. Naturally, this is reflected in the user agent's native UX that informs the user of a tab's zoom-level. This is limited so it only happens in response to direct interaction by the user with the capturing Web application.
+
+### 2.12 What temporary identifiers do the features in this specification create or expose to the web?
+
+None.
 
 ### 2.13. How does this specification distinguish between behavior in first-party and third-party contexts?
 
