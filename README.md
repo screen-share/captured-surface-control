@@ -224,36 +224,6 @@ Gestures like wheel and pinch might have effects other than scrolling the page. 
 
 Applications that are capturing their own tab can load arbitrary third-party content in iframes and scroll it, thereby either gaining access to new content of their choosing, or producing arbitrary side effects. The mitigation of the permission prompt is still presented as sufficient here, as is the unlikelihood of third-party content only being sensitive after scrolling. If necessary, in the future, it is possible to also remove the ability to control the current tab.
 
-### Transient activation
-
-If transient activation is not required before each individual invocation of the APIs introduced by this document, then once the initial permission is obtained, the API can be used at any time, possibly even while the user is away from the device and cannot observe the effects of their change.
-
-We argue that requiring transient activation is not desirable, as it renders impossible some legitimate use-cases, without actually contributing significantly to security.
-
-#### Legitimate use cases blocked by transient activation requirement
-
-Consider the following legitimate use case:
-
-1. The local user participates in a video-conferencing session and chooses to share a tab.
-2. Through interaction with the browser’s permission prompt, the local user allows scrolling and zooming of the captured tab by the video-conferencing application.
-3. Through interaction with the video-conferencing application, the user allows a specific remote participant to scroll the captured tab - when a remote user sends a request to scroll, the request gets translated by the local application to a sendWheel() invocation.
-4. The remote user can now control a local presentation, removing the need for the remote user to repeatedly ask the local user - "next slide, please." This is a major boon to such applications, where this is a critical user journey.
-
-#### Insufficiency of transient activation requirement to protect the user
-
-On the one hand, consider the following _potential attack_:
-
-1. Obtain the user’s permission to capture another tab.
-2. Use arbitrary user gestures to scroll the captured tab and change its zoom-level.
-
-While executing the aforementioned attack, either avoid presenting a preview-tile to the user, or show a frozen preview-tile containing an older frame, hiding from the user the scrolling of the captured tab.
-
-#### Conclusion
-
-It is arguable that the legitimate use case described above is risky. We argue that it’s up to the application to only deploy it according to the local user’s genuine intentions.
-
-**However**, user agents need to ensure that while a user is actively interacting with a captured tab, the capturing tab would not be able to concurrently zoom and scroll the captured tab, which would be confusing and frustrating for the user even in non-malicious settings. Due to the complexity of specifying and implementing this, Chrome's initial implementation of this API will only allow the capturing application to scroll/zoom while the capturing application is focused. The first draft of the spec will pose this as a requirement, but this may be changed at a later time.
-
 ## Potential future extensions
 
 ### Extension to additional gestures
