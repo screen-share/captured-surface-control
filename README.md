@@ -273,13 +273,13 @@ Benefits of PiP:
 - Captured surface fully interactive (as opposed to the limited set of actions afforded by Captured Surface Control).
 - Captured surface available in its original resolution.
 
-Benefits of CSC:
+Benefits of Captured Surface Control:
 
 - All elements of the capturing application presented in their original size and are fully interactive. (Consider the challenges of fitting a chat box into the PiP.)
 - Application has control of layout of remote participants videos and the captured-surface's preview tile.
 - Local user can delegate some actions to remote users (through the mediation of the application).
 
-It is expected that users intending to engage in significant interaction with the presented content would prefer PiP or other alternatives, while users who only need brief interactions to adjust scrolling and zooming would prefer CSC.
+It is expected that users intending to engage in significant interaction with the presented content would prefer PiP or other alternatives, while users who only need brief interactions to adjust scrolling and zooming would prefer Captured Surface Control.
 
 ## Uncommon questions
 
