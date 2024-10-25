@@ -4,9 +4,9 @@
 
 ### 2.1. What information might this feature expose to Web sites or other parties, and for what purposes is that exposure necessary?
 
-Given a website `A` that has used pre-existing means (`getDisplayMedia()``) to capture another tab `B`, and that therefore has access to all of `B`'s pixels, this feature exposes to `A`:
-* `B`'s zoom-level (without a user prompt).
-* Potentially, additional pixels in `B`, if the user granted permission through a prompt.
+Given a Web application `WA` that has used pre-existing means (`getDisplayMedia()`) to capture a tab `T`, and that therefore has access to all of `T`'s pixels, this feature exposes to `WA`:
+1. `T`'s zoom-level. (This is exposed without another permission policy or prompt).
+2. Potentially, additional pixels in `T`, if the user grants permission to forward gestures from `WA` to `T`, and/or allow `WA` to change `T`'s zoom-level.
 
 ### 2.2. Do features in your specification expose the minimum amount of information necessary to enable their intended uses?
 
