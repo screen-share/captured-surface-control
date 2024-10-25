@@ -210,7 +210,7 @@ We mitigate using a permission prompt. The downsides are as usual:
 - Difficulty in communicating to the user precisely what permission they are asked to grant.
 - Difficulty in communicating to the user why such a permission could be risky.
 
-The downsides are all known, and should be considered against those associated with alternative approaches (e.g. Video Portal).
+The downsides are all known, and should be considered against those associated with alternative approaches (e.g. [Video Portal](#rejected-alternative-video-portal)).
 
 #### Access at a time not controlled by the user
 
