@@ -16,7 +16,6 @@ All these applications suffer from the same drawback - if the user wishes to int
 - The user can't see the captured app and the videos of remote users at the same time unless they use [Picture-in-Picture](https://wicg.github.io/document-picture-in-picture/) or separate side-by-side windows for the video conference tab and the shared tab. On a smaller screen, this could be difficult.
 - The user is burdened by the need to jump between the video conferencing app and the captured surface.
 - The user loses access to the controls exposed by the video conferencing app while they are away from it; for example, an embedded chat app, emoji reactions, notifications about users asking to join the call, multimedia and layout controls, and other useful video conferencing features.
-- The presenter cannot delegate control to remote participants. This leads to the all too familiar scenario where remote users ask the presenter to change the slide, scroll a bit up and down, or adjust the zoom level.
 
 The Captured Surface Control APIs address these problems.
 
