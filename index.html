@@ -79,7 +79,7 @@
         <p>
           The API surfaces introduced by this specification can be categorized as either read-access
           or write-access. Note that only the write-access APIs ({{CaptureController/setZoomLevel}}
-          and {{CaptureController/captureWheel}}) are gated by the <a>"captured-surface-control"</a>
+          and {{CaptureController/forwardWheel}}) are gated by the <a>"captured-surface-control"</a>
           permissions policy.
         </p>
       </div>
@@ -319,7 +319,7 @@
       <pre class="idl">
         partial interface CaptureController {
           constructor();
-          Promise&lt;undefined&gt; captureWheel(HTMLElement element);
+          Promise&lt;undefined&gt; forwardWheel(HTMLElement element);
         };
       </pre>
       <dl data-link-for="CaptureController" data-dfn-for="CaptureController" class="methods">
@@ -339,17 +339,17 @@
             </thead>
             <tbody>
               <tr>
-                <td><dfn>[[\CaptureWheelElement]]</dfn></td>
+                <td><dfn>[[\forwardWheelElement]]</dfn></td>
                 <td><code>null</code></td>
               </tr>
               <tr>
-                <td><dfn>[[\CaptureWheelEventListener]]</dfn></td>
+                <td><dfn>[[\forwardWheelEventListener]]</dfn></td>
                 <td><code>null</code></td>
               </tr>
             </tbody>
           </table>
         </dd>
-        <dt><dfn>captureWheel()</dfn></dt>
+        <dt><dfn>forwardWheel()</dfn></dt>
         <dd>
           <p>
             This method allows applications to automatically forward
@@ -388,10 +388,10 @@
                     <p>
                       This step ensures that on the one hand, permission prompts are not be shown
                       without [=transient activation=], while on the one hand, if the permission is
-                      already {{PermissionState/"granted"}}, {{CaptureController/captureWheel()}}
+                      already {{PermissionState/"granted"}}, {{CaptureController/forwardWheel()}}
                       may be called immediately after {{MediaDevices/getDisplayMedia()}} resolves,
                       even if the [=transient activation=] that permitted the call to
-                      {{CaptureController/captureWheel()}} has since expired.
+                      {{CaptureController/forwardWheel()}} has since expired.
                     </p>
                   </div>
                 </li>
@@ -403,22 +403,22 @@
                   whose {{DOMException/name}} is {{NotAllowedError}} and abort these steps.
                 </li>
                 <li>
-                  If [=this=].{{CaptureController/[[CaptureWheelElement]]}} is not
+                  If [=this=].{{CaptureController/[[forwardWheelElement]]}} is not
                   <code>null</code>, [=remove an event listener=] with
-                  [=this=].{{CaptureController/[[CaptureWheelElement]]}} as |eventTarget| and
-                  [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as |listener|.
+                  [=this=].{{CaptureController/[[forwardWheelElement]]}} as |eventTarget| and
+                  [=this=].{{CaptureController/[[forwardWheelEventListener]]}} as |listener|.
                 </li>
                 <li>
-                  Set [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} to
+                  Set [=this=].{{CaptureController/[[forwardWheelEventListener]]}} to
                   <code>null</code>.
                 </li>
-                <li>Set [=this=].{{CaptureController/[[CaptureWheelElement]]}} to |element|.</li>
+                <li>Set [=this=].{{CaptureController/[[forwardWheelElement]]}} to |element|.</li>
                 <li>
-                  If [=this=].{{CaptureController/[[CaptureWheelElement]]}} is not
+                  If [=this=].{{CaptureController/[[forwardWheelElement]]}} is not
                   <code>null</code>:
                   <ol>
                     <li>
-                      Set [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} to an [=event
+                      Set [=this=].{{CaptureController/[[forwardWheelEventListener]]}} to an [=event
                       listener=] defined as follows:
                       <dl>
                         <dt>type</dt>
@@ -434,8 +434,8 @@
                     </li>
                     <li>
                       [=Add an event listener=] with
-                      [=this=].{{CaptureController/[[CaptureWheelElement]]}} as |eventTarget| and
-                      [=this=].{{CaptureController/[[CaptureWheelEventListener]]}} as |listener|.
+                      [=this=].{{CaptureController/[[forwardWheelElement]]}} as |eventTarget| and
+                      [=this=].{{CaptureController/[[forwardWheelEventListener]]}} as |listener|.
                     </li>
                   </ol>
                 </li>
@@ -508,7 +508,7 @@
               <li>
                 Let [|scaledX|, |scaledY|] be the result of the [=scale element coordinates
                 algorithm=] on [|event|.{{MouseEvent/offsetX}}, |event|.{{MouseEvent/offsetY}}] and
-                [=this=].{{CaptureController/[[CaptureWheelElement]]}}.
+                [=this=].{{CaptureController/[[forwardWheelElement]]}}.
               </li>
               <li>
                 [=Fire an event=] named `"wheel"` using {{WheelEvent}} with the {{MouseEvent/x}}
@@ -535,14 +535,14 @@
             Let |scaleFactorX| be
             <code
               >(|x| /
-              |controller|.{{CaptureController/[[CaptureWheelElement]]}}.{{Element/getBoundingClientRect()}}.{{DOMRect/width}})</code
+              |controller|.{{CaptureController/[[forwardWheelElement]]}}.{{Element/getBoundingClientRect()}}.{{DOMRect/width}})</code
             >.
           </li>
           <li>
             Let |scaleFactorX| be
             <code
               >(|x| /
-              |controller|.{{CaptureController/[[CaptureWheelElement]]}}.{{Element/getBoundingClientRect()}}.{{DOMRect/height}})</code
+              |controller|.{{CaptureController/[[forwardWheelElement]]}}.{{Element/getBoundingClientRect()}}.{{DOMRect/height}})</code
             >.
           </li>
           <li>
@@ -586,7 +586,7 @@
         </li>
         <li>A new {{PermissionsPolicy}} called <a>"captured-surface-control"</a> is used.</li>
         <li>
-          {{CaptureController/captureWheel()}} is designed such that only the user's scrolling over
+          {{CaptureController/forwardWheel()}} is designed such that only the user's scrolling over
           an {{Element}} can trigger scrolling in the captured application. This API shape ensures
           that the capturing application can only [=forward wheel event algorithm|forward wheel
           events=] to the captured application at the time when the user agent dispatches the
@@ -613,7 +613,7 @@
       <section>
         <h3>Scrolling: Limitation to specific interactions</h3>
         <p>
-          The shape of {{CaptureController/captureWheel()}} is intentionally chosen to limit the
+          The shape of {{CaptureController/forwardWheel()}} is intentionally chosen to limit the
           capturing application's control. The application designates a specific element which, when
           the user scrolls over it, the corresponding wheel events are forwarded to the captured
           application.
@@ -623,14 +623,14 @@
         <h3>Limiting element types</h3>
         <p>
           This specification does not limit the type of {{Element}} for which either
-          {{CaptureController/setZoomLevel()}} or {{CaptureController/captureWheel()}} work. Such a
+          {{CaptureController/setZoomLevel()}} or {{CaptureController/forwardWheel()}} work. Such a
           limitation would accomplish nothing, because malicious applications could always overlay
           transparent permitted {{Element}} types on top of visible non-permitted {{Element}}s,
           thereby bypassing this restriction.
         </p>
         <p>
           The limitation of interaction types is sufficient. This is accomplished by
-          {{CaptureController/captureWheel()}} through its shape, and by
+          {{CaptureController/forwardWheel()}} through its shape, and by
           {{CaptureController/setZoomLevel()}} through its gating on
           <a data-cite="DOM#dom-event-type">event types</a>.
         </p>
