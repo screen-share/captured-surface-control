@@ -41,10 +41,10 @@ previewTile.srcObject = stream;
 
 We distinguish between write-access and read-access APIs.
 
-- The write-access APIs introduced here, `captureWheel()` and `setZoomLevel()`, are gated by a new [Permissions Policy](https://www.w3.org/TR/permissions-policy-1/#permissionspolicy) called `"captured-surface-control"`.
+- The write-access APIs introduced here, `forwardWheel()` and `setZoomLevel()`, are gated by a new [Permissions Policy](https://www.w3.org/TR/permissions-policy-1/#permissionspolicy) called `"captured-surface-control"`.
 - Our read-access APIs are innocuous and are threfore left ungated.
 
-With most browsers' interpretation of [Permissions Policy](https://www.w3.org/TR/permissions-policy-1/#permissionspolicy), the first time an origin invokes either `captureWheel()` or `setZoomLevel()`, the browser shows a [permission prompt](https://w3c.github.io/permissions/#prompt-the-user-to-choose). How long this permission is persisted is up to the browser, with typical durations being "forever" or "for the current browsing session".
+With most browsers' interpretation of [Permissions Policy](https://www.w3.org/TR/permissions-policy-1/#permissionspolicy), the first time an origin invokes either `forwardWheel()` or `setZoomLevel()`, the browser shows a [permission prompt](https://w3c.github.io/permissions/#prompt-the-user-to-choose). How long this permission is persisted is up to the browser, with typical durations being "forever" or "for the current browsing session".
 
 Before displaying a permission prompt to the user, the app must solicit a user gesture. If the app wants to show zoom-in/out buttons ahead of time, then the user gesture is a given. But if the app wants to first inform the user about these new features, and provide clearer context about the ensuing permission prompt, then the app could include an onboarding experience that features a "start" button of some sort, after which it will invoke a write-access API in a no-op manner, producing the prompt but not causing any action thereafer. An example is:
 
@@ -61,7 +61,7 @@ document.getElementById("startButton").onclick = async () => {
       name: "captured-surface-control",
     });
     if (hasPermission.state !== "granted") {
-      await controller.sendWheel(controller.getZoomLevel());
+      await controller.setZoomLevel(controller.getZoomLevel());
     }
   } catch (e) {
     console.log(`Error: ${e}`);
@@ -71,33 +71,33 @@ document.getElementById("startButton").onclick = async () => {
 
 ### Scroll forwarding
 
-#### captureWheel()
+#### forwardWheel()
 
 To faciliate scrolling of captured surfaces, we extend `CaptureController` as follows:
 
 ```webidl
   partial interface CaptureController {
-    Promise<undefined> captureWheel(HTMLElement? element);
+    Promise<undefined> forwardWheel(HTMLElement? element);
   };
 ```
 
-Using `captureWheel()`, a capturing application can forward subsequent [wheel events](https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event) from a local element, such as the preview tile, to the captured surface's viewport. The browser determines the coordinates of the event relative to the origin of the target element, then produces a corresponding event on the captured surface at corresponding coordinates, after scaling. This forwarded event is indistinguishable to the captured application from direct user interaction.
+Using `forwardWheel()`, a capturing application can forward subsequent [wheel events](https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event) from a local element, such as the preview tile, to the captured surface's viewport. The browser determines the coordinates of the event relative to the origin of the target element, then produces a corresponding event on the captured surface at corresponding coordinates, after scaling. This forwarded event is indistinguishable to the captured application from direct user interaction.
 
-`captureWheel()` is subject to a permissions policy, which might involve a permission prompt. The method returns a `Promise` that is resolved if the connection is successfully made, and rejected otherwise (for example, if the user rejects the permission prompt).
+`forwardWheel()` is subject to a permissions policy, which might involve a permission prompt. The method returns a `Promise` that is resolved if the connection is successfully made, and rejected otherwise (for example, if the user rejects the permission prompt).
 
 Sample usage:
 
 ```js
 try {
-  await controller.captureWheel(previewTile);
+  await controller.forwardWheel(previewTile);
 } catch (e) {
   console.log(`Error: ${e}`);
 }
 ```
 
-It is possible to use `captureWheel()` with any type of element. This allows applications to forward gestures from elements other than the `HTMLVideoElement` itself. Thanks to this useful property of the API, applicationss can draw text, annotations and emoji-reactions over the video preview tile, and the experience will still work as the user expects.
+It is possible to use `forwardWheel()` with any type of element. This allows applications to forward gestures from elements other than the `HTMLVideoElement` itself. Thanks to this useful property of the API, applicationss can draw text, annotations and emoji-reactions over the video preview tile, and the experience will still work as the user expects.
 
-To stop the forwarding of wheel events, applications can invoke `captureWheel(null)`.
+To stop the forwarding of wheel events, applications can invoke `forwardWheel(null)`.
 
 Forwarding will also stop if the capture-session ends for whatever reason.
 
