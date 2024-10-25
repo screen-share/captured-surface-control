@@ -214,7 +214,7 @@ The downsides are all known, and should be considered against those associated w
 
 #### Access at a time not controlled by the user
 
-Discussed [below](#transient-activation).
+All write-access introduced by this spec, are limited to the time when the user agent is actively dispatching the event caused by the user's interaction.
 
 #### Side effects
 
