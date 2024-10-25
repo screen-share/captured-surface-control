@@ -257,9 +257,6 @@ It is arguable that the legitimate use case described above is risky. We argue t
 
 ## Potential future extensions
 
-### Extension from tab-capture to window-capture
-At the moment, the API only supports control of captured tabs. In the future, the API might be extended to allow control of windows.
-
 ### Extension to additional gestures
 At the moment, the API allows forwarding of wheel events. In the future, other gestures might be considered, such as pinch.
 
