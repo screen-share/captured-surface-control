@@ -61,7 +61,7 @@ This feature does not distinguish first-party and third-party contexts.
 Not applicable.
 
 
-### 2.Does this specification have both "Security Considerations" and "Privacy Considerations" sections?
+### 2.15. Does this specification have both "Security Considerations" and "Privacy Considerations" sections?
 
 No, but that's because the specification has still not been written. However, the explainer has a combined "Security and Privacy Considerations" section.
 
