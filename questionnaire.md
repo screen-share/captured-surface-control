@@ -63,7 +63,7 @@ Not applicable.
 
 ### 2.15. Does this specification have both "Security Considerations" and "Privacy Considerations" sections?
 
-No, but that's because the specification has still not been written. However, the explainer has a combined "Security and Privacy Considerations" section.
+Yes.
 
 ### 2.16. Do features in your specification enable origins to downgrade default security protections?
 
