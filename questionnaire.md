@@ -1,4 +1,4 @@
-# Security and Privacy Questionnaire for Element Capture
+# Security and Privacy Questionnaire for Captured Surface Control
 
 ## Questions to Consider
 
