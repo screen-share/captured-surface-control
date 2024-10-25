@@ -253,6 +253,14 @@ It bears mentioning that, while we provide an API for app-level control of zoom,
 
 Heuristics are imperfect - they often fail to trigger when desired, or trigger when not desired. Browser vendors are free to try their hand at developing such heuristics, but we believe it is essential that the Web platform include a mechanism for Web applications to explicitly trigger the functionality introduces by Captured Surface Control. (Note that this is not mutually-exclusive with heuristics.)
 
+### Rejected alternative: Video Portal
+
+An alternative approach, currently labeled "Video Portal", has been discussed, for example in the [following slides deck](https://docs.google.com/presentation/d/1RIRPAg-M3pQYTFqL0rDGBIl8bQvLAzq122lWUF5JIy8/edit#slide=id.g1df86d70a44_0_25). This approach strikes yet _another_ balance, giving control over the captured surface to the local user rather than to the application.
+
+On the one hand, this means that almost any action could be allowed; on the other, it means that all the power rests in the local user's hands, and cannot be delegated from the user to the application.
+
+We see this approach as a possible _complementary_ approach that may be pursued separately from Captured Surface Control.
+
 ## Common questions
 
 ### What about Picutre-in-Picture?
@@ -272,10 +280,6 @@ Benefits of CSC:
 - Local user can delegate some actions to remote users (through the mediation of the application).
 
 It is expected that users intending to engage in significant interaction with the presented content would prefer PiP or other alternatives, while users who only need brief interactions to adjust scrolling and zooming would prefer CSC.
-
-### What about Video Portal?
-
-An alternative approach, currently labeled "Video Portal", has been discussed, for example in the [following slides deck](https://docs.google.com/presentation/d/1RIRPAg-M3pQYTFqL0rDGBIl8bQvLAzq122lWUF5JIy8/edit#slide=id.g1df86d70a44_0_25). This approach strikes yet _another_ balance, giving control over the captured surface to the local user rather than to the application. On the one hand, this means that almost any action could be allowed; on the other, it means that all the power rests in the local user's hands, and cannot be delegated from the user to the application. We see this approach as a possible _complementary_ approach that may be pursued separately from CSC.
 
 ## Uncommon questions
 
