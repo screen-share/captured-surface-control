@@ -22,7 +22,7 @@ Not applicable.
 
 ### 2.5. Do the features in your specification introduce new state for an origin that persists across browsing sessions?
 
-Yes - the state of the permission policy introduced by this spec, `"captured-surface-control"`.
+Yes - the state of the permission policy introduced by this spec, `"captured-surface-control"`.  
 Otherwise - no.
 
 ### 2.6. Do the features in your specification expose information about the underlying platform to origins?
