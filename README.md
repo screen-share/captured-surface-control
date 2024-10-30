@@ -257,6 +257,10 @@ On the one hand, this means that almost any action could be allowed; on the othe
 
 We see this approach as a possible _complementary_ approach that may be pursued separately from Captured Surface Control.
 
+## Security and Privacy Considerations
+
+Please see the specification's own section [here](https://screen-share.github.io/captured-surface-control/#privacy-and-security-considerations).
+
 ## Common questions
 
 ### What about Picutre-in-Picture?
