@@ -1,15 +1,16 @@
 var respecConfig = {
-  group: "cg/sccg",
-  specStatus: "CG-DRAFT",
+  group: "wg/webrtc",
+  specStatus: "ED",
   github: {
-    repoURL: "https://github.com/screen-share/captured-surface-control",
-    branch: "master",
+    repoURL: "https://github.com/w3c/mediacapture-surface-control",
+    branch: "main",
   },
   editors: [
     {
       name: "Elad Alon",
       email: "eladalon@google.com",
       company: "Google",
+      w3cid: 118124
     },
   ],
   xref: [
@@ -25,6 +26,7 @@ var respecConfig = {
     "cssom-view",
     "geometry-1",
   ],
-  shortName: "captured-surface-control",
-  subjectPrefix: "[captured-surface-control]",
+  latestVersion: null,
+  shortName: "mediacapture-surface-control",
+  subjectPrefix: "[mediacapture-surface-control]",
 };
